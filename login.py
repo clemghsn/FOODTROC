@@ -34,6 +34,7 @@ class Login(ctk.CTkFrame):
 
     def login(self):
         if self.entry.get() == "admin" and self.entry2.get() == "1234":
+            print("Connexion réussie")
             self.switch_page("menu")
         else:
             print("Erreur")
