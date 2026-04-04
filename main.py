@@ -1,6 +1,7 @@
 import customtkinter as ctk
-from login import Login
-from menu import Menu
+from Login import Login
+from Menu import Menu
+from Inventaire import Inventaire
 
 class App(ctk.CTk):
     def __init__(self):
@@ -19,6 +20,9 @@ class App(ctk.CTk):
 
         elif page == "menu":
             self.current_frame = Menu(self, self.show_frame)
+        
+        elif page == "inventaire":
+            self.current_frame = Inventaire(self, self.show_frame)
 
         self.current_frame.pack(fill="both", expand=True)
 
