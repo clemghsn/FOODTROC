@@ -1,0 +1,7 @@
+id_user,password,lat,lon,ingredients
+"Clémentine", "1234",45.75,4.85,"lait"
+"Angélique","5678",45.76,4.83,"oeufs"
+"Claire","abcd",45.74,4.87,"tomates"
+"Heloïse","efgh",45.75,4.87,"fromage"
+
+

@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from PIL import Image
+from Map import Map
 
 class Menu(ctk.CTkFrame):
     def __init__(self, master, switch_page):
@@ -27,11 +28,16 @@ class Menu(ctk.CTkFrame):
         self.button_add = ctk.CTkButton(self.frame, text="", image = self.img_add, width=50, height=50, fg_color ="transparent", border_width=0)
         self.button_add.grid(row=1, column=1, padx=10, pady=20, sticky="ew")
 
-        self.button_carte = ctk.CTkButton(self.frame,text="", image = self.img_map, width=50, height=50, fg_color ="transparent", border_width=0)
+        self.button_carte = ctk.CTkButton(self.frame,text="", image = self.img_map, command = self.affiche_carte, width=50, height=50, fg_color ="transparent", border_width=0)
         self.button_carte.grid(row=1, column=2, padx=10, pady=20, sticky="ew")
 
         self.button_logout = ctk.CTkButton(self.frame, text="Déconnexion", command=self.logout)
         self.button_logout.grid(row=1, column=3, padx=10, pady=20, sticky="ew")
+
+    def affiche_carte(self):
+        new_window = ctk.CTkToplevel(self)
+        new_window.geometry("800x500")
+        Map(new_window)
 
     def logout(self):
         self.switch_page("login")
