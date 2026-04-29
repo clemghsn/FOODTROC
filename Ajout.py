@@ -27,6 +27,7 @@ class Ajout(ctk.CTkFrame):
         self.entry_aliment = ctk.CTkEntry(self.card,placeholder_text="Type d'aliment",height=40)
         self.entry_aliment.grid(row=1, column=0, padx=40, pady=10, sticky="ew")
 
+
         self.entry_quantite = ctk.CTkEntry(self.card,placeholder_text="Quantité",height=40)
         self.entry_quantite.grid(row=2, column=0, padx=40, pady=10, sticky="ew")
 
