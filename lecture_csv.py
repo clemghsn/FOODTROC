@@ -14,7 +14,7 @@ def charger_donnees(fichier_csv):
             
     return dictionnaire_aliments
 
-base_aliments = charger_donnees_nutrition('nutrition.csv')
+base_aliments = charger_donnees('nutrition.csv')
 
 def chercher_aliment(nom_recherche):
     nom_recherche = nom_recherche.lower()
