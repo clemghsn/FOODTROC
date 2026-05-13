@@ -5,7 +5,6 @@ class Inventaire(ctk.CTkFrame):
     
     def __init__(self, master, switch_page):
         super().__init__(master)
-        
         self.switch_page = switch_page
 
         # centrer le contenu
@@ -28,13 +27,13 @@ class Inventaire(ctk.CTkFrame):
         self.button_back = ctk.CTkButton(self.header,text="←",width=40,command=lambda: self.switch_page("menu"))
         self.button_back.grid(row=0, column=2, sticky="e")
         
-    def afficher_inventaire(self):
-        aliments = [
-            {"nom": "Pomme", "quantite": "2", "date": "12/04"},
-            {"nom": "Fromage", "quantite": "1", "date": "10/04"},
+    aliments = [
+            {"nom": "Pomme", "quantite": "2", "date": "12/04/2026"},
+            {"nom": "Fromage", "quantite": "1", "date": "10/04/2026"},
         ]
 
-        for aliment in aliments:
+    def afficher_inventaire(self):
+        for aliment in Inventaire.aliments:
             self.create_card(aliment)
 
 

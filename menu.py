@@ -2,6 +2,8 @@ import customtkinter as ctk
 from PIL import Image
 from Map import Map
 from Ajout import Ajout
+import webbrowser
+from Carte import Carte
 
 
 class Menu(ctk.CTkFrame):
@@ -43,10 +45,9 @@ class Menu(ctk.CTkFrame):
         self.button_logout.grid(row=2, column=3, padx=10, pady=20, sticky="ew")
 
     def affiche_carte(self):
-        new_window = ctk.CTkToplevel(self)
-        new_window.title("Carte")
-        new_window.geometry("800x500")
-        Map(new_window)
+        carte = Carte()   # ta classe folium
+        carte.generer()    # méthode qui crée map.html
+        webbrowser.open("map.html")
 
     def affiche_ajout(self):
         new_window = ctk.CTkToplevel(self)

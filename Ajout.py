@@ -1,10 +1,10 @@
 import customtkinter as ctk
 from Aliment import Aliment
+from Inventaire import Inventaire
 
 class Ajout(ctk.CTkFrame):
 
     def __init__(self, master):
-
         super().__init__(master)
         self.pack(fill="both", expand=True)
 
@@ -45,13 +45,22 @@ class Ajout(ctk.CTkFrame):
         self.button_ajouter.grid(row=5, column=0, padx=40, pady=(20, 20), sticky="ew")
 
     def ajouter_aliment(self):
-
+        dico = {}
+        
         aliment = self.entry_aliment.get()
+        dico["nom"] = aliment
+        
         quantite = self.entry_quantite.get()
+        dico["quantite"] = quantite
+        
         date = self.entry_date.get()
-
-        print(aliment, quantite, date)
-        return (aliment, quantite, date)
+        dico["date"] = date
+        
+        Inventaire.aliments.append(dico)
+        
+        self.master.destroy()
+        
+        
 
 
     def update_suggestions(self, event):
