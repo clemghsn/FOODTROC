@@ -17,7 +17,7 @@ class Menu(ctk.CTkFrame):
         self.img_add = ctk.CTkImage(light_image=Image.open("images/add.png"),size=(40,40))
         self.img_map = ctk.CTkImage(light_image=Image.open("images/map.png"),size=(40,40))
         self.img_inventaire = ctk.CTkImage(light_image=Image.open("images/inventaire.png"),size=(100,100))
-        self.img_foodtroc= ctk.CTkImage(light_image=Image.open("images/foodtroc.png"),size=(300,100))
+        self.img_logo= ctk.CTkImage(light_image=Image.open("images/logo.png"),size=(300,100))
         self.switch_page = switch_page
         
         self.frame = ctk.CTkFrame(self, width=500, height=300, corner_radius=10, fg_color='#9DD69A')
@@ -26,7 +26,7 @@ class Menu(ctk.CTkFrame):
         for i in range(4):
             self.frame.grid_columnconfigure(i, weight=1)
 
-        self.label = ctk.CTkLabel(self.frame, text="",image = self.img_foodtroc )
+        self.label = ctk.CTkLabel(self.frame, text="",image = self.img_logo )
         self.label.grid(row=0, column=0, columnspan=4, pady=(10,20))
 
         self.button_inventaire = ctk.CTkButton(self.frame, text="",image = self.img_inventaire, width=100, height=100, fg_color ="transparent", border_width=0, command=self.affiche_inventaire)
