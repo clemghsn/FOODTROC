@@ -3,11 +3,13 @@ from Login import Login
 from Menu import Menu
 from Inventaire import Inventaire
 
+ctk.set_default_color_theme("green")
+
 class App(ctk.CTk):
+    
     def __init__(self):
         super().__init__()
         self.geometry("600x450")
-
         self.current_frame = None
         self.show_frame("login")
 

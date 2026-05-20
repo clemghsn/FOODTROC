@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_6c450657514a70e24fac4505a6820bcb {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_6c450657514a70e24fac4505a6820bcb" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_6c450657514a70e24fac4505a6820bcb = L.map(
+                "map_6c450657514a70e24fac4505a6820bcb",
+                {
+                    center: [45.75, 4.85],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 13,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_d894d86e78f1336694b5ae7990218334 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_d894d86e78f1336694b5ae7990218334.addTo(map_6c450657514a70e24fac4505a6820bcb);
+        
+    
+            var marker_fec2ed1040ad0f825307e52683436fad = L.marker(
+                [45.75, 4.85],
+                {
+}
+            ).addTo(map_6c450657514a70e24fac4505a6820bcb);
+        
+    
+            var icon_45f74930562c8ebb12fb38184100e74c = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_b3270340aaf229dd16a76679acddb80f = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_251509603dbb7d5c0745d9fcb3e88d78 = $(`<div id="html_251509603dbb7d5c0745d9fcb3e88d78" style="width: 100.0%; height: 100.0%;">             <div style="                 font-family: Arial;                 font-size: 13px;                 min-width: 180px;                 white-space: nowrap;             ">                 <b style="font-size:14px;">                     Clémentine                 </b><br>                  📍 12 rue de la Paix, Lyon<br>                  📞 0612345678<br>                  🍽️ Beurre             </div>             </div>`)[0];
+                popup_b3270340aaf229dd16a76679acddb80f.setContent(html_251509603dbb7d5c0745d9fcb3e88d78);
+            
+        
+
+        marker_fec2ed1040ad0f825307e52683436fad.bindPopup(popup_b3270340aaf229dd16a76679acddb80f)
+        ;
+
+        
+    
+    
+            marker_fec2ed1040ad0f825307e52683436fad.bindTooltip(
+                `<div>
+                     Clémentine
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_fec2ed1040ad0f825307e52683436fad.setIcon(icon_45f74930562c8ebb12fb38184100e74c);
+            
+    
+            var marker_866cf10d748b2218828d3608dd73990d = L.marker(
+                [45.76, 4.83],
+                {
+}
+            ).addTo(map_6c450657514a70e24fac4505a6820bcb);
+        
+    
+            var icon_257666bbc1d77d9db1ef5ae91059e313 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_b288bf40e6f2aff61d794688347c95a6 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_97b68eff5a8c154d9a5d18e4710e2590 = $(`<div id="html_97b68eff5a8c154d9a5d18e4710e2590" style="width: 100.0%; height: 100.0%;">             <div style="                 font-family: Arial;                 font-size: 13px;                 min-width: 180px;                 white-space: nowrap;             ">                 <b style="font-size:14px;">                     Angélique                 </b><br>                  📍 7 avenue Jean Jaurès, Lyon<br>                  📞 0623456789<br>                  🍽️ Pain             </div>             </div>`)[0];
+                popup_b288bf40e6f2aff61d794688347c95a6.setContent(html_97b68eff5a8c154d9a5d18e4710e2590);
+            
+        
+
+        marker_866cf10d748b2218828d3608dd73990d.bindPopup(popup_b288bf40e6f2aff61d794688347c95a6)
+        ;
+
+        
+    
+    
+            marker_866cf10d748b2218828d3608dd73990d.bindTooltip(
+                `<div>
+                     Angélique
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_866cf10d748b2218828d3608dd73990d.setIcon(icon_257666bbc1d77d9db1ef5ae91059e313);
+            
+    
+            var marker_d987661bf989221bd2360bcef9811b25 = L.marker(
+                [45.74, 4.87],
+                {
+}
+            ).addTo(map_6c450657514a70e24fac4505a6820bcb);
+        
+    
+            var icon_806bdac510a82a92d585f0e658007243 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_5f60cfcbf3d06de4100bb091b854cfae = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_541e03d1ae76f037d11d6e3a444dea84 = $(`<div id="html_541e03d1ae76f037d11d6e3a444dea84" style="width: 100.0%; height: 100.0%;">             <div style="                 font-family: Arial;                 font-size: 13px;                 min-width: 180px;                 white-space: nowrap;             ">                 <b style="font-size:14px;">                     Claire                 </b><br>                  📍 3 rue Mercière, Lyon<br>                  📞 0634567890<br>                  🍽️ Salade             </div>             </div>`)[0];
+                popup_5f60cfcbf3d06de4100bb091b854cfae.setContent(html_541e03d1ae76f037d11d6e3a444dea84);
+            
+        
+
+        marker_d987661bf989221bd2360bcef9811b25.bindPopup(popup_5f60cfcbf3d06de4100bb091b854cfae)
+        ;
+
+        
+    
+    
+            marker_d987661bf989221bd2360bcef9811b25.bindTooltip(
+                `<div>
+                     Claire
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_d987661bf989221bd2360bcef9811b25.setIcon(icon_806bdac510a82a92d585f0e658007243);
+            
+    
+            var marker_d3cbf2e1e996e6bf5ae7915a4a9286f8 = L.marker(
+                [45.75, 4.87],
+                {
+}
+            ).addTo(map_6c450657514a70e24fac4505a6820bcb);
+        
+    
+            var icon_02272d70c6ae971f558b3bd1c5fb6252 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_b197de4aec8bd445ca11defe1ace3001 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_fbf51f39d7412cea34958f21a617391d = $(`<div id="html_fbf51f39d7412cea34958f21a617391d" style="width: 100.0%; height: 100.0%;">             <div style="                 font-family: Arial;                 font-size: 13px;                 min-width: 180px;                 white-space: nowrap;             ">                 <b style="font-size:14px;">                     Héloïse                 </b><br>                  📍 25 rue de la République, Lyon<br>                  📞 0645678901<br>                  🍽️ Pommes • Fraise             </div>             </div>`)[0];
+                popup_b197de4aec8bd445ca11defe1ace3001.setContent(html_fbf51f39d7412cea34958f21a617391d);
+            
+        
+
+        marker_d3cbf2e1e996e6bf5ae7915a4a9286f8.bindPopup(popup_b197de4aec8bd445ca11defe1ace3001)
+        ;
+
+        
+    
+    
+            marker_d3cbf2e1e996e6bf5ae7915a4a9286f8.bindTooltip(
+                `<div>
+                     Héloïse
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_d3cbf2e1e996e6bf5ae7915a4a9286f8.setIcon(icon_02272d70c6ae971f558b3bd1c5fb6252);
+            
+</script>
+</html>

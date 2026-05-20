@@ -2,6 +2,8 @@ import customtkinter as ctk
 from PIL import Image
 from Map import Map
 from Ajout import Ajout
+import webbrowser
+from Carte import Carte
 
 
 class Menu(ctk.CTkFrame):
@@ -18,7 +20,7 @@ class Menu(ctk.CTkFrame):
         self.img_foodtroc= ctk.CTkImage(light_image=Image.open("images/foodtroc.png"),size=(300,100))
         self.switch_page = switch_page
         
-        self.frame = ctk.CTkFrame(self, width=500, height=300, corner_radius=10)
+        self.frame = ctk.CTkFrame(self, width=500, height=300, corner_radius=10, fg_color='#a6ebb5')
         self.frame.pack(pady=40)
 
         for i in range(4):
@@ -43,10 +45,9 @@ class Menu(ctk.CTkFrame):
         self.button_logout.grid(row=2, column=3, padx=10, pady=20, sticky="ew")
 
     def affiche_carte(self):
-        new_window = ctk.CTkToplevel(self)
-        new_window.title("Carte")
-        new_window.geometry("800x500")
-        Map(new_window)
+        carte = Carte()   # ta classe folium
+        carte.generer()    # méthode qui crée map.html
+        webbrowser.open("map.html")
 
     def affiche_ajout(self):
         new_window = ctk.CTkToplevel(self)
