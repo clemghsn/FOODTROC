@@ -26,6 +26,7 @@ class Inventaire(ctk.CTkFrame):
         # bouton retour (optionnel)
         self.button_back = ctk.CTkButton(self.header,text="←",width=40,command=lambda: self.switch_page("menu"))
         self.button_back.grid(row=0, column=2, sticky="e")
+
         
     aliments = [
             {"nom": "Pomme", "quantite": "2", "date": "12/04/2026"},
@@ -38,15 +39,26 @@ class Inventaire(ctk.CTkFrame):
 
 
     def create_card(self, aliment):
+
         card = ctk.CTkFrame(self.scroll, corner_radius=10)
         card.pack(fill="x", padx=10, pady=5)
 
-        label_nom = ctk.CTkLabel(card, text=aliment["nom"], font=("Arial", 14, "bold"))
+        # colonne extensible
+        card.grid_columnconfigure(3, weight=1)
+
+        label_nom = ctk.CTkLabel(card,text=aliment["nom"],font=("Arial", 14, "bold"))
         label_nom.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
-        label_qte = ctk.CTkLabel(card, text=f"Qté: {aliment['quantite']}")
+        label_qte = ctk.CTkLabel(card,text=f"Qté: {aliment['quantite']}")
         label_qte.grid(row=0, column=1, padx=10)
 
-        label_date = ctk.CTkLabel(card, text=f"Expire: {aliment['date']}")
+        label_date = ctk.CTkLabel(card,text=f"Expire: {aliment['date']}")
         label_date.grid(row=0, column=2, padx=10)
-                    
+
+        # bouton poster
+        button_post = ctk.CTkButton(card,text="+",width=40)
+        button_post.grid(row=0, column=4, padx=(0, 5), pady=5)
+
+        # bouton supprimer
+        button_supp = ctk.CTkButton(card,text="X",width=40)
+        button_supp.grid(row=0, column=5, padx=(0, 10), pady=5)
