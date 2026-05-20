@@ -45,21 +45,33 @@ class Ajout(ctk.CTkFrame):
         self.button_ajouter.grid(row=5, column=0, padx=40, pady=(20, 20), sticky="ew")
 
     def ajouter_aliment(self):
-        dico = {}
-        
+        """Récupère les données entrées par l'utilisateur"""
         aliment = self.entry_aliment.get()
-        dico["nom"] = aliment
-        
         quantite = self.entry_quantite.get()
-        dico["quantite"] = quantite
-        
         date = self.entry_date.get()
-        dico["date"] = date
-        
-        Inventaire.aliments.append(dico)
-        
-        self.master.destroy()
-        
+
+        if aliment and quantite and date:
+            self.ajout_inventaire(aliment, quantite, date)
+            
+            if isinstance(self.master, ctk.CTkToplevel): # ferme la fenêtre de saisie après l'ajout
+                self.master.destroy()
+        else:
+            print("Erreur : Veuillez remplir tous les champs")
+
+    def ajout_inventaire(self, nom, qte, date):
+        """écrit les données dans le fichier inventaire.csv"""
+        fichier = 'inventaire.csv'
+
+        with open(fichier, mode='a', newline='', encoding='utf-8') as f: # On ouvre en mode 'a' (append) pour ajouter à la fin mais sans effacer
+            colonnes = ['nom', 'quantite', 'date']
+            lecteur = csv.DictWriter(f, fieldnames=colonnes)
+
+            lecteur.writerow({
+                'nom': nom,
+                'quantite': qte,
+                'date': date
+            })
+        print(f"Vous avez ajouté {nom} à {fichier}")
         
 
 

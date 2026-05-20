@@ -37,6 +37,16 @@ class Inventaire(ctk.CTkFrame):
         for aliment in Inventaire.aliments:
             self.create_card(aliment)
 
+    def afficher_inventaire_V2(self):
+            try:
+                with open('inventaire.csv', mode='r', encoding='utf-8') as f: #mode r=reading
+                    lecteur = csv.DictReader(f)
+                    for ligne in lecteur:
+                        # 'ligne' est maintenant un dico : {"nom": "Pomme", "quantite": "2", ...}
+                        self.create_card(ligne)
+            except FileNotFoundError: #on teste si le fichier existe pas mais normalement il existe tt le temps c une simulation
+                print("Le fichier inventaire.csv n'existe pas encore.")
+
 
     def create_card(self, aliment):
 
