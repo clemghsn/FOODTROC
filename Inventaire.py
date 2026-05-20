@@ -70,5 +70,5 @@ class Inventaire(ctk.CTkFrame):
         button_post.grid(row=0, column=4, padx=(0, 5), pady=5)
 
         # bouton supprimer
-        button_supp = ctk.CTkButton(card,text="X",width=40)
+        button_supp = ctk.CTkButton(card,text="x",width=40)
         button_supp.grid(row=0, column=5, padx=(0, 10), pady=5)

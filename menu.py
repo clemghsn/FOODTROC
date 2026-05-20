@@ -20,7 +20,7 @@ class Menu(ctk.CTkFrame):
         self.img_foodtroc= ctk.CTkImage(light_image=Image.open("images/foodtroc.png"),size=(300,100))
         self.switch_page = switch_page
         
-        self.frame = ctk.CTkFrame(self, width=500, height=300, corner_radius=10)
+        self.frame = ctk.CTkFrame(self, width=500, height=300, corner_radius=10, fg_color='#a6ebb5')
         self.frame.pack(pady=40)
 
         for i in range(4):
