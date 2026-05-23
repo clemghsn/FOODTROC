@@ -1,11 +1,13 @@
 import customtkinter as ctk
 from tkinter import CENTER
+import csv
 
 
 
 class Login(ctk.CTkFrame):
     def __init__(self, master, switch_page):
         super().__init__(master)
+        self.users = self.charger_donnees("users.csv")
 
         self.switch_page = switch_page
         
@@ -31,10 +33,29 @@ class Login(ctk.CTkFrame):
         self.button = ctk.CTkButton(self.frame, text="Connexion", command = self.login, width=200, height=32, border_width=0, corner_radius=8)
         self.button.grid(row=3, column=0, columnspan=2, pady=20)
 
+    def charger_donnees(self, fichier_csv):
+
+        users = {}
+
+        with open(fichier_csv, mode='r', encoding='utf-8') as f:
+
+            lecteur = csv.DictReader(f)
+            print(lecteur.fieldnames)
+
+            for ligne in lecteur:
+
+                users[ligne["id_user"]]= {
+                    "mdp": ligne["password"],
+                }
+
+        return users
 
     def login(self):
-        if self.entry.get() == "admin" and self.entry2.get() == "1234":
+        identifiant = self.entry.get()
+        mdp = self.entry2.get()
+        if identifiant in self.users and mdp == self.users[identifiant]["mdp"]:
             print("Connexion réussie")
+            self.master.current_user = identifiant
             self.switch_page("menu")
         else:
             print("Erreur")

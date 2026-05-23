@@ -2,14 +2,18 @@ import customtkinter as ctk
 from PIL import Image
 from Map import Map
 from Ajout import Ajout
+from Inventaire import Inventaire
 import webbrowser
+import csv
 from Carte import Carte
-
+from datetime import datetime, timedelta
+from CTkMessagebox import CTkMessagebox
 
 class Menu(ctk.CTkFrame):
     def __init__(self, master, switch_page):
         super().__init__(master)
         self.switch_page = switch_page
+        self.users = self.charger_donnees("users.csv")
 
         # image
         self.img_add = ctk.CTkImage(light_image=Image.open("images/ajouter.png"), size=(200, 65))
@@ -47,7 +51,7 @@ class Menu(ctk.CTkFrame):
         self.button_logout = ctk.CTkButton(self.frame, text="",image = self.img_deco, command=self.logout, width=0, height=0, fg_color ="transparent", border_width=0)
         self.button_logout.grid(row=3, column=1,padx = 15, pady=(10,20), sticky="n")
         
-        self.button_rappel = ctk.CTkButton(self.frame, text="",image = self.img_rappel, width=0, height=0, fg_color ="transparent", border_width=0)
+        self.button_rappel = ctk.CTkButton(self.frame, text="",image = self.img_rappel,command =self.afficher_rappels, width=0, height=0, fg_color ="transparent", border_width=0)
         self.button_rappel.grid(row=3, column=0,padx = 15, pady=(10,20), sticky="n")
 
     def affiche_carte(self):
@@ -66,3 +70,49 @@ class Menu(ctk.CTkFrame):
 
     def logout(self):
         self.switch_page("login")
+
+    def charger_donnees(self, fichier_csv):
+
+        users = {}
+
+        with open(fichier_csv, mode='r', encoding='utf-8') as f:
+
+            lecteur = csv.DictReader(f)
+            print(lecteur.fieldnames)
+
+            for ligne in lecteur:
+
+                users[ligne["id_user"]]= {
+                    "inventaire": ligne["inventaire"]
+                }
+
+        return users
+
+
+    def rappels(self):
+        rappels = []
+        inventaire = self.users[self.master.current_user]["inventaire"]
+
+        aliments = inventaire.split("|")
+        today = datetime.today()
+
+        for aliment in aliments:
+            nom, quantite, date = aliment.split(":")
+            date_peremption = datetime.strptime(date, "%d/%m/%Y")
+            diff = (date_peremption - today).days
+
+            if 0 <= diff <= 3:
+
+                rappels.append(f"{nom} expire dans {diff} jours")
+            return rappels
+
+    def afficher_rappels(self):
+        res = self.rappels()
+
+        if res:
+            texte = "\n".join(res)
+        else:
+            texte = "Aucun aliment proche de la péremption"
+        
+        CTkMessagebox(title="Rappels", message = texte)
+

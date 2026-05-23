@@ -11,6 +11,7 @@ class App(ctk.CTk):
         super().__init__()
         self.geometry("625x625")
         self.current_frame = None
+        self.current_user = None
         self.show_frame("login")
 
     def show_frame(self, page):
