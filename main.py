@@ -9,7 +9,7 @@ class App(ctk.CTk):
     
     def __init__(self):
         super().__init__()
-        self.geometry("600x700")
+        self.geometry("625x625")
         self.current_frame = None
         self.show_frame("login")
 

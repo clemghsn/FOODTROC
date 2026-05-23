@@ -9,7 +9,7 @@ class Login(ctk.CTkFrame):
 
         self.switch_page = switch_page
         
-        self.frame = ctk.CTkFrame(self,width=500,height=300,corner_radius=10)
+        self.frame = ctk.CTkFrame(self,width=300,height=300,corner_radius=10)
         self.frame.pack()
 
         self.label = ctk.CTkLabel(self.frame, text="Veuillez vous authentifier", width = 120, height=25, corner_radius=8, font=("Segoe UI", 15))
