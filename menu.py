@@ -1,6 +1,5 @@
 import customtkinter as ctk
 from PIL import Image
-from Map import Map
 from Ajout import Ajout
 from Inventaire import Inventaire
 import webbrowser
@@ -63,7 +62,7 @@ class Menu(ctk.CTkFrame):
         new_window = ctk.CTkToplevel(self)
         new_window.title("Ajouter un aliment")
         new_window.geometry("320x350")
-        Ajout(new_window)
+        Ajout(new_window, self.master.current_user)
 
     def affiche_inventaire(self):
         self.switch_page("inventaire")
@@ -78,7 +77,6 @@ class Menu(ctk.CTkFrame):
         with open(fichier_csv, mode='r', encoding='utf-8') as f:
 
             lecteur = csv.DictReader(f)
-            print(lecteur.fieldnames)
 
             for ligne in lecteur:
 
@@ -104,7 +102,7 @@ class Menu(ctk.CTkFrame):
             if 0 <= diff <= 3:
 
                 rappels.append(f"{nom} expire dans {diff} jours")
-            return rappels
+        return rappels
 
     def afficher_rappels(self):
         res = self.rappels()
@@ -114,5 +112,5 @@ class Menu(ctk.CTkFrame):
         else:
             texte = "Aucun aliment proche de la péremption"
         
-        CTkMessagebox(title="Rappels", message = texte)
+        CTkMessagebox(title="Rappels", message = texte, icon ="warning")
 

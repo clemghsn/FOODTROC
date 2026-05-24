@@ -2,11 +2,13 @@ import customtkinter as ctk
 from Aliment import Aliment
 from Inventaire import Inventaire
 import csv
+from datetime import datetime
 
 class Ajout(ctk.CTkFrame):
 
-    def __init__(self, master):
+    def __init__(self, master, current_user):
         super().__init__(master)
+        self.current_user = current_user
         self.pack(fill="both", expand=True)
 
         # centrer le contenu
@@ -52,6 +54,16 @@ class Ajout(ctk.CTkFrame):
         date = self.entry_date.get()
 
         if aliment and quantite and date:
+            try: 
+                date_peremption = datetime.strptime(date.strip(), "%d/%m/%Y").date()
+                today = datetime.today().date()
+                if date_peremption < today:
+                    print("La date est déjà passée")
+                    return
+            except ValueError:
+                print("Erreur: format de date invalide (JJ/MM/AAAA)")
+                return
+
             self.ajout_inventaire(aliment, quantite, date)
             
             if isinstance(self.master, ctk.CTkToplevel): # ferme la fenêtre de saisie après l'ajout
@@ -60,20 +72,58 @@ class Ajout(ctk.CTkFrame):
             print("Erreur : Veuillez remplir tous les champs")
 
     def ajout_inventaire(self, nom, qte, date):
-        """écrit les données dans le fichier inventaire.csv"""
-        fichier = 'inventaire.csv'
 
-        with open(fichier, mode='a', newline='', encoding='utf-8') as f: # On ouvre en mode 'a' (append) pour ajouter à la fin mais sans effacer
-            colonnes = ['nom', 'quantite', 'date']
-            lecteur = csv.DictWriter(f, fieldnames=colonnes)
+        fichier = 'users.csv'
+        users = []
 
-            lecteur.writerow({
-                'nom': nom,
-                'quantite': qte,
-                'date': date
-            })
-        print(f"Vous avez ajouté {nom} à {fichier}")
-        
+        qte = int(qte)
+
+        with open(fichier, mode='r', newline='', encoding='utf-8') as f:
+            lecteur = csv.DictReader(f)
+            colonnes = lecteur.fieldnames  
+
+            for ligne in lecteur:
+                
+                ligne.setdefault("inventaire", "")
+
+                if ligne["id_user"] == self.current_user:
+                    
+                    inventaire = ligne.get("inventaire", "")
+                    aliments = inventaire.split("|") if inventaire else []
+                    found = False
+
+                    for i in range(len(aliments)):
+
+                        if not aliments[i]:
+                            continue
+                        
+                        try : 
+                            n, q, d = aliments[i].split(":")
+                            q = int(q)
+
+                            if n == nom and d == date:
+                                aliments[i] = f"{n}:{q + qte}:{d}"
+                                found = True
+                                break
+
+                        except ValueError:
+                            continue
+
+                    if not found:
+                        aliments.append(f"{nom}:{qte}:{date}")
+
+                    ligne["inventaire"] = "|".join(aliments)
+
+                users.append(ligne)
+
+        with open(fichier, mode='w', newline='', encoding='utf-8') as f:
+
+            writer = csv.DictWriter(f, fieldnames=colonnes)
+            writer.writeheader()
+            for user in users:
+                writer.writerow(user)
+
+        print(f"{nom} ajouté à l'inventaire de {self.current_user}")
 
 
     def update_suggestions(self, event):
@@ -89,7 +139,6 @@ class Ajout(ctk.CTkFrame):
 
         suggestions = Aliment.chercher_aliment(texte)
 
-        # afficher suggestions
         if suggestions:
 
             self.suggestion_frame.grid(

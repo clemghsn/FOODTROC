@@ -64,12 +64,12 @@ class Inventaire(ctk.CTkFrame):
         label_date.grid(row=0, column=2, padx=10)
 
         # bouton poster
-        button_post = ctk.CTkButton(card,text="+",width=40) #command=self.poster)
+        button_post = ctk.CTkButton(card,text="Poster",width=40, command=lambda a=aliment: self.poster(a))
         button_post.grid(row=0, column=4, padx=(0, 5), pady=5)
 
 
         # bouton supprimer
-        button_supp = ctk.CTkButton(card,text="x",width=40) #command=self.supprimer)
+        button_supp = ctk.CTkButton(card,text="Supprimer",width=40, command=lambda a=aliment: self.supprimer(a),fg_color="#E74C3C", hover_color="#C0392B")
         button_supp.grid(row=0, column=5, padx=(0, 10), pady=5)
 
     def charger_donnees(self, fichier_csv):
@@ -114,7 +114,100 @@ class Inventaire(ctk.CTkFrame):
 
         return aliments
 
-    #def supprimer(self):
+    def supprimer(self, aliment):
+
+        fichier = "users.csv"
+        users = []
+
+        with open(fichier, mode="r", encoding="utf-8") as f:
+            lecteur = csv.DictReader(f)
+            colonnes = lecteur.fieldnames
+
+            for ligne in lecteur:
+
+                if ligne["id_user"] == self.master.current_user:
+
+                    inventaire = ligne.get("inventaire", "")
+                    aliments = inventaire.split("|") if inventaire else []
+
+                    new_list = []
+
+                    for item in aliments:
+
+                        if not item:
+                            continue
+
+                        nom, qte, date = item.split(":")
+
+                        if not (nom == aliment["nom"] and date == aliment["date"]):
+                            new_list.append(item)
+
+                    ligne["inventaire"] = "|".join(new_list)
+
+                users.append(ligne)
+
+        with open(fichier, mode="w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=colonnes)
+            writer.writeheader()
+            writer.writerows(users)
+
+        self.refresh()
         
-    
-    #def poster(self):
+    def poster(self, aliment):
+
+        fichier = "users.csv"
+        users = []
+
+        with open(fichier, mode="r", encoding="utf-8") as f:
+            lecteur = csv.DictReader(f)
+            colonnes = lecteur.fieldnames
+
+            for ligne in lecteur:
+
+                if ligne["id_user"] == self.master.current_user:
+
+                    # enlever inventaire
+                    inventaire = ligne.get("inventaire", "")
+                    aliments = inventaire.split("|") if inventaire else []
+
+                    new_inv = []
+                    for item in aliments:
+
+                        if not item:
+                            continue
+
+                        nom, qte, date = item.split(":")
+
+                        if not (nom == aliment["nom"] and date == aliment["date"]):
+                            new_inv.append(item)
+
+                    ligne["inventaire"] = "|".join(new_inv)
+
+                    # ajouter dans aliments_postes
+                    postes = ligne.get("aliments_postes", "")
+
+                    new_post = f"{aliment['nom']}:{aliment['quantite']}:{aliment['date']}"
+
+                    if postes.strip() == "":
+                        ligne["aliments_postes"] = new_post
+                    else:
+                        ligne["aliments_postes"] += "|" + new_post
+
+                users.append(ligne)
+
+        with open(fichier, mode="w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=colonnes)
+            writer.writeheader()
+            writer.writerows(users)
+
+        self.refresh()
+
+    def refresh(self):
+        for widget in self.scroll.winfo_children():
+            widget.destroy()
+
+        self.users = self.charger_donnees("users.csv")
+        inventaire_str = self.users[self.master.current_user]["inventaire"]
+        self.inventaire = self.parser_inventaire(inventaire_str)
+
+        self.afficher_inventaire()

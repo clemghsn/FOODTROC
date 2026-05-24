@@ -75,7 +75,7 @@ class Carte:
 
                 tooltip=user["id_user"],
 
-                icon=folium.Icon(color="green")
+                icon=folium.Icon(color="green", icon="cutlery", prefix="fa")
 
             ).add_to(self.carte)
 
