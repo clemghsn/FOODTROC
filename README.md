@@ -1,6 +1,6 @@
 # ISN Projet 
 
-## FoodTroc
+## FoodTroc - *"No Waste, Just Taste"*
 
 
 ## Description
@@ -32,18 +32,13 @@ Lien du GitLab: https://gitlab.insa-lyon.fr/cghosn/isn-projet.git
 
 # Get started
 
-Installer VSCodium
-
-Installer l'outil git
-
-Selectionner le dossier de travail d'ISN
-Ouvrir le terminal dans ce dossier
-
-Utiliser git clone https://gitlab.insa-lyon.fr/cghosn/isn-projet.git afin de créer une copie de travail sur l'ordinateur
-
-Entrer login insa et mdp.
-
-Profiter de la copie locale pour développer !
+- Installer VSCodium
+- Installer l'outil git
+- Selectionner le dossier de travail d'ISN
+- Ouvrir le terminal dans ce dossier
+- Utiliser git clone https://gitlab.insa-lyon.fr/cghosn/isn-projet.git afin de créer une copie de travail sur l'ordinateur
+- Entrer login insa et mdp.
+- Profiter de la copie locale pour développer !
 
 # Comment ajouter des modifications
 
