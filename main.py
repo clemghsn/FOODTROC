@@ -6,8 +6,25 @@ from Inventaire import Inventaire
 ctk.set_default_color_theme("green")
 
 class App(ctk.CTk):
+    """
+        Classe principale de l'application.
+
+        Elle gère :
+            - la fenêtre principale Tkinter
+            - la navigation entre les différentes pages (login, menu, inventaire)
+            - l'état global de l'utilisateur connecté
+            - l'affichage et la destruction des frames
+    """
     
     def __init__(self):
+        """
+            Initialise l'application principale avec :
+
+                - la taille de la fenêtre
+                - l'utilisateur courant (non connecté au départ)
+                - la frame actuellement affichée
+                - puis affiche directement la page de login
+        """
         super().__init__()
         self.geometry("625x625")
         self.current_frame = None
@@ -15,6 +32,20 @@ class App(ctk.CTk):
         self.show_frame("login")
 
     def show_frame(self, page):
+        """
+            Change la page affichée dans l'application.
+
+            Détruit la frame actuelle puis crée la nouvelle
+            en fonction du nom de la page demandé.
+
+            Pages disponibles :
+                - "login" : page de connexion
+                - "menu" : menu principal
+                - "inventaire" : gestion de l'inventaire
+
+            Paramètre:
+                - page (str) : nom de la page à afficher
+        """
         if self.current_frame:
             self.current_frame.destroy()
 
