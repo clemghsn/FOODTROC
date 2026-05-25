@@ -2,8 +2,28 @@ import customtkinter as ctk
 import csv
 
 class Inventaire(ctk.CTkFrame):
+    """
+        Interface graphique permettant d'afficher et gérer
+        l'inventaire de l'utilisateur connecté.
+
+        Cette classe permet :
+            - d'afficher les aliments de l'inventaire
+            - de supprimer un aliment
+            - de poster un aliment
+            - de mettre à jour l'affichage dynamiquement
+    """
     
     def __init__(self, master, switch_page):
+        """
+            Initialise la page inventaire.
+
+            Charge les données utilisateur, récupère l'inventaire 
+            du current_user puis affiche les cartes des aliments.
+
+            Paramètres:
+                - master : fenêtre ou widget parent.
+                - switch_page : fonction permettant de changer de page.
+        """
         super().__init__(master)
         self.switch_page = switch_page
         self.users = self.charger_donnees("users.csv")
@@ -32,21 +52,29 @@ class Inventaire(ctk.CTkFrame):
 
 
     def afficher_inventaire(self):
+        """
+            Affiche tous les aliments présents
+            dans l'inventaire de l'utilisateur.
+        """
         for aliment in self.inventaire:
             self.create_card(aliment)
 
-    def afficher_inventaire_V2(self):
-            try:
-                with open('inventaire.csv', mode='r', encoding='utf-8') as f: #mode r=reading
-                    lecteur = csv.DictReader(f)
-                    for ligne in lecteur:
-                        # 'ligne' est maintenant un dico : {"nom": "Pomme", "quantite": "2", ...}
-                        self.create_card(ligne)
-            except FileNotFoundError: #on teste si le fichier existe pas mais normalement il existe tt le temps c une simulation
-                print("Le fichier inventaire.csv n'existe pas encore.")
-
 
     def create_card(self, aliment):
+        """
+            Crée une carte représentant un aliment.
+
+            La carte affiche :
+                - le nom
+                - la quantité
+                - la date de péremption
+                - un bouton pour poster l'aliment
+                - un bouton pour supprimer l'aliment
+
+            Paramètres:
+                aliment (dict) : dictionnaire contenant
+                les informations de l'aliment.
+        """
 
         card = ctk.CTkFrame(self.scroll, corner_radius=10)
         card.pack(fill="x", padx=10, pady=5)
@@ -73,6 +101,19 @@ class Inventaire(ctk.CTkFrame):
         button_supp.grid(row=0, column=5, padx=(0, 10), pady=5)
 
     def charger_donnees(self, fichier_csv):
+        """
+            Charge les données des utilisateurs depuis un fichier CSV.
+
+            Les informations récupérées sont :
+                - l'inventaire
+                - les aliments postés
+
+            Paramètre:
+                - fichier_csv (str) : chemin du fichier CSV.
+
+            Retourne:
+                - users (dict) : dictionnaire contenant les données utilisateurs.
+        """
 
         users = {}
 
@@ -94,6 +135,16 @@ class Inventaire(ctk.CTkFrame):
         return users
 
     def parser_inventaire(self, inventaire_str):
+        """
+            Transforme la chaîne de caractères de l'inventaire
+            en liste de dictionnaires exploitables.
+
+            Paramètre:
+                - inventaire_str (str) : chaîne représentant l'inventaire.
+
+            Retourne:
+                - aliments (list) : liste des aliments formatés.
+        """
 
         aliments = []
 
@@ -115,6 +166,16 @@ class Inventaire(ctk.CTkFrame):
         return aliments
 
     def supprimer(self, aliment):
+        """
+            Supprime un aliment de l'inventaire
+            de l'utilisateur connecté.
+
+            Le fichier users.csv est ensuite mis à jour
+            puis l'interface est rafraîchie.
+
+            Paramètre:
+                - aliment (dict) : aliment à supprimer
+        """
 
         fichier = "users.csv"
         users = []
@@ -154,6 +215,16 @@ class Inventaire(ctk.CTkFrame):
         self.refresh()
         
     def poster(self, aliment):
+        """
+            Déplace un aliment de l'inventaire vers la liste 
+            des aliments postés de l'utilisateur connecté.
+
+            Le fichier users.csv est mis à jour puis l'affichage 
+            est rafraîchi.
+
+            Paramètre:
+                - aliment (dict) : aliment à poster.
+        """
 
         fichier = "users.csv"
         users = []
@@ -203,6 +274,10 @@ class Inventaire(ctk.CTkFrame):
         self.refresh()
 
     def refresh(self):
+        """
+            Recharge les données de l'inventaire puis met à jour
+            l'affichage des cartes dans l'interface graphique.
+        """
         for widget in self.scroll.winfo_children():
             widget.destroy()
 

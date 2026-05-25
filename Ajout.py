@@ -5,8 +5,26 @@ import csv
 from datetime import datetime
 
 class Ajout(ctk.CTkFrame):
+    """
+        Fenêtre permettant à un utilisateur d'ajouter un aliment
+        à son inventaire personnel.
+
+        Cette interface contient :
+            - un champ de saisie du nom de l'aliment,
+            - un champ de quantité,
+            - un champ de date de péremption,
+            - un système de suggestions automatiques,
+            - un bouton d'ajout dans le fichier users.csv.
+    """
 
     def __init__(self, master, current_user):
+        """
+            Initialise la fenêtre d'ajout d'aliment.
+
+            Paramètres:
+                - master : fenêtre
+                - current_user (str) : identifiant de l'utilisateur connecté.
+        """
         super().__init__(master)
         self.current_user = current_user
         self.pack(fill="both", expand=True)
@@ -15,7 +33,7 @@ class Ajout(ctk.CTkFrame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        # carte centrale (effet moderne)
+        # carte centrale 
         self.card = ctk.CTkFrame(self, corner_radius=15, width=320, height=350)
         self.card.grid(row=0, column=0)
         self.card.grid_propagate(False)
@@ -48,7 +66,19 @@ class Ajout(ctk.CTkFrame):
         self.button_ajouter.grid(row=5, column=0, padx=40, pady=(20, 20), sticky="ew")
 
     def ajouter_aliment(self):
-        """Récupère les données entrées par l'utilisateur"""
+        """
+            Récupère les informations saisies par l'utilisateur
+            et vérifie leur validité avant l'ajout.
+
+            Vérifications effectuées :
+                - tous les champs sont remplis,
+                - la date respecte le format JJ/MM/AAAA,
+                - la date de péremption n'est pas passée.
+
+            Si les données sont valides :
+                - l'aliment est ajouté à l'inventaire,
+                - la fenêtre se ferme lors de l'appui du bouton Ajouter
+        """
         aliment = self.entry_aliment.get()
         quantite = self.entry_quantite.get()
         date = self.entry_date.get()
@@ -72,7 +102,18 @@ class Ajout(ctk.CTkFrame):
             print("Erreur : Veuillez remplir tous les champs")
 
     def ajout_inventaire(self, nom, qte, date):
+        """
+            Ajoute un aliment dans l'inventaire de l'utilisateur courant
+            dans le fichier users.csv.
 
+            Si l'aliment existe déjà avec la même date de péremption,
+            la quantité est incrémentée.
+
+            Paramètres:
+                - nom (str) : nom de l'aliment.
+                - qte (int ou str) : quantité de l'aliment.
+                - date (str) : date de péremption au format JJ/MM/AAAA.
+        """
         fichier = 'users.csv'
         users = []
 
@@ -125,9 +166,18 @@ class Ajout(ctk.CTkFrame):
 
         print(f"{nom} ajouté à l'inventaire de {self.current_user}")
 
-
+    # Pour le menu déroulant
     def update_suggestions(self, event):
+        """
+            Met à jour la liste des suggestions d'aliments
+            pendant la saisie dans le champ texte.
 
+            Les suggestions proviennent de la méthode
+            Aliment.chercher_aliment().
+
+            Paramètre:
+                - event : événement clavier déclenché lors de la saisie.
+        """
         texte = self.entry_aliment.get().lower()
 
         for widget in self.suggestion_frame.winfo_children():
@@ -158,6 +208,13 @@ class Ajout(ctk.CTkFrame):
 
 
     def select_suggestion(self, aliment):
+        """
+            Insère l'aliment sélectionné dans le champ de saisie
+            puis masque la liste des suggestions.
+
+            Paramètre:
+                - aliment (str) : aliment choisi par l'utilisateur.
+        """
 
         self.entry_aliment.delete(0, "end")
         self.entry_aliment.insert(0, aliment)
