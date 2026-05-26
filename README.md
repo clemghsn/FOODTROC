@@ -10,7 +10,7 @@ Voici les fonctionnalités principales :
 
 Carte collaborative : publie ou récupére des aliments chez des utlisateurs de FoodTroc pour éviter qu'ils ne soient jetés.
 
-Gestion d'inventaire : tes aliments sont suivis, (type, quantité, date de péremption), on t'alerte même quand tes aliments vont bientôt périmés !
+Gestion d'inventaire : tes aliments sont suivis, (type, quantité, date de péremption), on t'alerte même quand tes aliments vont bientôt périmer !
 
 
 ## Comment l'utiliser ?
