@@ -24,7 +24,7 @@ if Aliment.chercher_aliment("po") == valeur_attendue_1:
     print(True)
 else:
     print(False)
-
+    
 #2. on teste si il prend en compte les majuscules
 
 valeur_attendue_2 = ["pain"]
@@ -94,7 +94,7 @@ else:
 
 # test limite, recherche d'un aliment inexistant (Aliment.py)
 
-print("Test aliment introuvable")
+print("Test si aliment introuvable")
 
 #si l'utilisateur tape n'importe quoi (ex: "xyz"), l'algo doit renvoyer une liste vide []
 valeur_attendue_vide = []
