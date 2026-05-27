@@ -156,7 +156,7 @@ class Menu(ctk.CTkFrame):
         for aliment in aliments:
             nom, quantite, date = aliment.split(":")
             date_peremption = datetime.strptime(date, "%d/%m/%Y")
-            diff = (date_peremption - today).days
+            diff = (date_peremption - today).days + 1
 
             if 0 <= diff <= 3:
 

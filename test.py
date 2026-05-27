@@ -1,5 +1,5 @@
 from Aliment import Aliment
-from menu import Menu
+from Menu import Menu
 from Inventaire import Inventaire
 from datetime import datetime, timedelta
 
