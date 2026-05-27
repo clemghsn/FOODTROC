@@ -4,6 +4,10 @@ from Inventaire import Inventaire
 from datetime import datetime, timedelta
 
 #on teste la recherche d'aliments
+class MockMaster: 
+    def __init__(self):
+        self.current_user = "Clémentine"
+
 
 Aliment.base_aliments = {
     "pomme": {"calories": 52, "proteines": 0.3},
@@ -20,7 +24,7 @@ if Aliment.chercher_aliment("po") == valeur_attendue_1:
     print(True)
 else:
     print(False)
-
+    
 #2. on teste si il prend en compte les majuscules
 
 valeur_attendue_2 = ["pain"]
@@ -29,7 +33,7 @@ if Aliment.chercher_aliment("PaiN") == valeur_attendue_2:
 else:
     print(False)
 
-#on teste les notifications d'alertes péremption
+##on teste les notifications d'alertes péremption
 
 print("test du calcul des rappels de péremption")
 
@@ -40,24 +44,37 @@ aujourdhui_str = aujourdhui.strftime("%d/%m/%Y")
 exp_3_jours = (aujourdhui + timedelta(3)).strftime("%d/%m/%Y")
 exp_10_jours = (aujourdhui + timedelta(10)).strftime("%d/%m/%Y")
 
+
 #on crée une fausse chaîne d'inventaire comme celle du CSV
 
 fausse_chaine_inventaire = f"pomme:2:{aujourdhui_str}|fraise:1:{exp_3_jours}|beurre:1:{exp_10_jours}"
 
-#on met l'objet Menu à vide sans lancer l'interface graphique
-menu_test = Menu.__new__(Menu)
+#on créé un menu simulé
+master_mock = MockMaster()
+menu_test = Menu.__new__(Menu) # crée l'objet sans lancer l'interface
+menu_test.master = master_mock
+
+# on simule un inventaire utilisateur : 
+# La pomme expire aujourd'hui (0 jour), la fraise dans 3 jours, le beurre dans 10 jours (pas d'alerte)
+menu_test.users = {
+    "Clémentine": {
+        "inventaire": f"pomme:2:{aujourdhui_str}|fraise:1:{exp_3_jours}|beurre:1:{exp_10_jours}"
+    }
+}
 
 valeur_attendue_rappels = [
     "pomme expire dans 0 jours",
     "fraise expire dans 3 jours"
 ]
 
-if menu_test.rappels(fausse_chaine_inventaire) == valeur_attendue_rappels:
+if menu_test.rappels() == valeur_attendue_rappels:
     print(True)
 else:
     print(False)
 
-#test découpage de la chaîne d'inventaire : le parsing
+
+
+##test découpage de la chaîne d'inventaire : le parsing
 
 print("Test du découpage de la chaîne d'inventaire CSV")
 
@@ -77,7 +94,7 @@ else:
 
 # test limite, recherche d'un aliment inexistant (Aliment.py)
 
-print("Test aliment introuvable")
+print("Test si aliment introuvable")
 
 #si l'utilisateur tape n'importe quoi (ex: "xyz"), l'algo doit renvoyer une liste vide []
 valeur_attendue_vide = []
@@ -95,3 +112,6 @@ print("test des rappels (cas inventaire vide)")
 chaine_vide = ""
 
 valeur_attendue_pas_d_alerte = []
+
+
+
