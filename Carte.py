@@ -80,41 +80,41 @@ class Carte:
                 - les aliments postés.
         """
         for user in self.users:
+            if len(user["aliments_postes"]) != 0:
+                popup_html = f"""
+                <div style="
+                    font-family: Arial;
+                    font-size: 13px;
+                    min-width: 180px;
+                    white-space: nowrap;
+                ">
+                    <b style="font-size:14px;">
+                        {user['id_user']}
+                    </b><br>
 
-            popup_html = f"""
-            <div style="
-                font-family: Arial;
-                font-size: 13px;
-                min-width: 180px;
-                white-space: nowrap;
-            ">
-                <b style="font-size:14px;">
-                    {user['id_user']}
-                </b><br>
+                    📍 {user['adresse']}<br>
 
-                📍 {user['adresse']}<br>
+                    📞 {user['telephone']}<br>
 
-                📞 {user['telephone']}<br>
+                    🍽️ {self.format_aliments(user['aliments_postes'])}
+                </div>
+                """
 
-                🍽️ {self.format_aliments(user['aliments_postes'])}
-            </div>
-            """
+                folium.Marker(
 
-            folium.Marker(
+                    location=[
+                        user["latitude"],
+                        user["longitude"]
+                    ],
 
-                location=[
-                    user["latitude"],
-                    user["longitude"]
-                ],
+                    popup=folium.Popup(
+                        popup_html,
+                        max_width=300
+                    ),
 
-                popup=folium.Popup(
-                    popup_html,
-                    max_width=300
-                ),
+                    tooltip=user["id_user"],
 
-                tooltip=user["id_user"],
-
-                icon=folium.Icon(color="green", icon="cutlery", prefix="fa")
+                    icon=folium.Icon(color="green", icon="cutlery", prefix="fa")
 
             ).add_to(self.carte)
 
