@@ -1,10 +1,10 @@
 import customtkinter as ctk
 from PIL import Image
-from Ajout import Ajout
-from Inventaire import Inventaire
+from ajout import Ajout
+from inventaire import Inventaire
 import webbrowser
 import csv
-from Carte import Carte
+from carte import Carte
 from datetime import datetime, timedelta
 from CTkMessagebox import CTkMessagebox
 
