@@ -3,7 +3,6 @@ from tkinter import CENTER
 import csv
 
 
-
 class Login(ctk.CTkFrame):
     def __init__(self, master, switch_page):
         super().__init__(master)

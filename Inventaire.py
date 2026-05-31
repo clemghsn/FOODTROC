@@ -77,7 +77,7 @@ class Inventaire(ctk.CTkFrame):
         """
 
         card = ctk.CTkFrame(self.scroll, corner_radius=10)
-        card.pack(fill="x", padx=10, pady=5)
+        card.pack(fill="x", padx=15, pady=6)
 
         # colonne extensible
         card.grid_columnconfigure(3, weight=1)

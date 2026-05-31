@@ -64,6 +64,9 @@ class Menu(ctk.CTkFrame):
         self.button_add = ctk.CTkButton(self.frame, text="", image = self.img_add, command = self.affiche_ajout, width=0, height=0, fg_color ="transparent", border_width=0)
         self.button_add.grid(row=1, column=1, padx=15, pady=10)
 
+        self.button_posts = ctk.CTkButton(self.frame, text="Posts", command = self.affiche_posts, width=0, height=0, fg_color ="transparent", border_width=0)
+        self.button_posts.grid(row=1, column=2, padx=15, pady=10)
+
         self.button_carte = ctk.CTkButton(self.frame,text="", image = self.img_map, command = self.affiche_carte, width=0, height=0, fg_color ="transparent", border_width=0)
         self.button_carte.grid(row=2, column=0, columnspan = 2, padx=15, pady=10)
 
@@ -95,6 +98,13 @@ class Menu(ctk.CTkFrame):
         new_window.title("Ajouter un aliment")
         new_window.geometry("320x350")
         Ajout(new_window, self.master.current_user)
+    
+    def affiche_posts(self):
+        """
+            Change la page actuelle vers les posts
+            via la fonction de navigation switch_page.
+        """
+        self.switch_page("posts")
 
     def affiche_inventaire(self):
         """

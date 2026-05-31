@@ -2,6 +2,7 @@ import customtkinter as ctk
 from Login import Login
 from menu import Menu
 from inventaire import Inventaire
+from posts import Posts
 
 ctk.set_default_color_theme("green")
 
@@ -57,6 +58,9 @@ class App(ctk.CTk):
         
         elif page == "inventaire":
             self.current_frame = Inventaire(self, self.show_frame)
+
+        elif page == "posts":
+            self.current_frame = Posts(self, self.show_frame)
 
         self.current_frame.pack(fill="both", expand=True)
 

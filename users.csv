@@ -2,4 +2,4 @@ id_user,password,telephone,adresse,latitude,longitude,inventaire,aliments_postes
 Clémentine,1234,0612345678,"12 rue de la Paix, Lyon",45.75,4.85,"lait:2:25/05/2026|yaourt:4:22/05/2026|strawberries, raw:12:30/05/2026","beurre:1:20/05/2026|strawberries, raw:2:25/02/2026|bananas, raw:4:28/05/2026"
 Angélique,5678,0623456789,"7 avenue Jean Jaurès, Lyon",45.76,4.83,oeufs:6:30/05/2026|fromage:1:28/05/2026,pain:2:19/05/2026
 Claire,abcd,0634567890,"3 rue Mercière, Lyon",45.74,4.87,tomates:5:23/05/2026|courgettes:3:26/05/2026,salade:1:19/05/2026
-Héloïse,efgh,0645678901,"25 rue de la République, Lyon",45.75,4.87,"cauliflower, raw:5:25/06/2026|pears, red anjou, raw:8:30/05/2026","pommes:4:27/05/2026|fraise:12: 20/05/2026|bananas, raw:2:30/05/2026"
+Héloïse,efgh,0645678901,"25 rue de la République, Lyon",45.75,4.87,"cauliflower, raw:5:25/06/2026|pears, red anjou, raw:9:30/05/2026","fraise:12: 20/05/2026|bananas, raw:3:30/05/2026|pommes:4:27/05/2026"
