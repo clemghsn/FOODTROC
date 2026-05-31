@@ -91,14 +91,25 @@ class Inventaire(ctk.CTkFrame):
         label_date = ctk.CTkLabel(card,text=f"Expire: {aliment['date']}")
         label_date.grid(row=0, column=2, padx=10)
 
+
+        # bouton moins
+        button_less = ctk.CTkButton(card,text="-",font=("Arial", 16, "bold"), width=3, corner_radius=15, fg_color = "grey", command=lambda a=aliment: self.moins(a))
+        button_less.grid(row=0, column=4, padx=(0, 5), pady=5)
+
+        # bouton plus
+        button_more = ctk.CTkButton(card,text="+",font=("Arial", 16, "bold"), width=3, corner_radius=15, fg_color = "grey", command=lambda a=aliment: self.plus(a))
+        button_more.grid(row=0, column=5, padx=(0, 5), pady=5)
+
+
+
         # bouton poster
         button_post = ctk.CTkButton(card,text="Poster",width=40, command=lambda a=aliment: self.poster(a))
-        button_post.grid(row=0, column=4, padx=(0, 5), pady=5)
+        button_post.grid(row=0, column=6, padx=(0, 5), pady=5)
 
 
         # bouton supprimer
         button_supp = ctk.CTkButton(card,text="Supprimer",width=40, command=lambda a=aliment: self.supprimer(a),fg_color="#E74C3C", hover_color="#C0392B")
-        button_supp.grid(row=0, column=5, padx=(0, 10), pady=5)
+        button_supp.grid(row=0, column=7, padx=(0, 10), pady=5)
 
     def charger_donnees(self, fichier_csv):
         """
@@ -263,6 +274,115 @@ class Inventaire(ctk.CTkFrame):
                         ligne["aliments_postes"] = new_post
                     else:
                         ligne["aliments_postes"] += "|" + new_post
+
+                users.append(ligne)
+
+        with open(fichier, mode="w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=colonnes)
+            writer.writeheader()
+            writer.writerows(users)
+
+        self.refresh()
+
+    def plus(self, aliment):
+        """
+            Incrémente de 1 la quantité d'un aliment de l'inventaire
+            de l'utilisateur connecté.
+
+            Le fichier users.csv est ensuite mis à jour
+            puis l'interface est rafraîchie.
+
+            Paramètre:
+                - aliment (dict) : aliment à modifier
+        """
+
+        fichier = "users.csv"
+        users = []
+
+        with open(fichier, mode="r", encoding="utf-8") as f:
+            lecteur = csv.DictReader(f)
+            colonnes = lecteur.fieldnames
+
+            for ligne in lecteur:
+
+                if ligne["id_user"] == self.master.current_user:
+
+                    inventaire = ligne.get("inventaire", "")
+                    aliments = inventaire.split("|") if inventaire else []
+
+                    new_list = []
+
+                    for item in aliments:
+
+                        if not item:
+                            continue
+
+                        nom, qte, date = item.split(":")
+
+                        if not (nom == aliment["nom"] and date == aliment["date"]):
+                            new_list.append(item)
+                        else :
+                            int_qte = int(qte) + 1
+                            qte = str(int_qte)
+                            item = nom +":"+ qte + ":" + date
+                            new_list.append(item)
+
+                    ligne["inventaire"] = "|".join(new_list)
+
+                users.append(ligne)
+
+        with open(fichier, mode="w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=colonnes)
+            writer.writeheader()
+            writer.writerows(users)
+
+        self.refresh()
+
+    def moins(self, aliment) :
+        """
+            Décrémente de 1 la quantité d'un aliment de l'inventaire
+            de l'utilisateur connecté.
+
+            Le fichier users.csv est ensuite mis à jour
+            puis l'interface est rafraîchie.
+
+            Paramètre:
+                - aliment (dict) : aliment à modifier
+        """
+
+        fichier = "users.csv"
+        users = []
+
+        with open(fichier, mode="r", encoding="utf-8") as f:
+            lecteur = csv.DictReader(f)
+            colonnes = lecteur.fieldnames
+
+            for ligne in lecteur:
+
+                if ligne["id_user"] == self.master.current_user:
+
+                    inventaire = ligne.get("inventaire", "")
+                    aliments = inventaire.split("|") if inventaire else []
+
+                    new_list = []
+
+                    for item in aliments:
+
+                        if not item:
+                            continue
+
+                        nom, qte, date = item.split(":")
+
+                        if not (nom == aliment["nom"] and date == aliment["date"]):
+                            new_list.append(item)
+                        else :
+                            if qte != "1": 
+                                int_qte = int(qte) - 1
+                                qte = str(int_qte)
+                                item = nom +":"+ qte + ":" + date
+                                new_list.append(item)
+
+                    ligne["inventaire"] = "|".join(new_list)
 
                 users.append(ligne)
 
