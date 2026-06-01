@@ -4,7 +4,7 @@ from Ajout import Ajout
 from Inventaire import Inventaire
 import webbrowser
 import csv
-from Carte import Carte
+from carte import Carte
 from datetime import datetime, timedelta
 from CTkMessagebox import CTkMessagebox
 import pygame
