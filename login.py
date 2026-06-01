@@ -3,6 +3,7 @@ from tkinter import CENTER
 import csv
 
 
+
 class Login(ctk.CTkFrame):
     def __init__(self, master, switch_page):
         super().__init__(master)
@@ -27,7 +28,6 @@ class Login(ctk.CTkFrame):
         
         self.entry2 = ctk.CTkEntry(self.frame, width = 170, height=35, corner_radius=10, show="*")
         self.entry2.grid(row=2, column=1, padx=10, pady=10)
-
 
         self.button = ctk.CTkButton(self.frame, text="Connexion", command = self.login, width=200, height=32, border_width=0, corner_radius=8, font=("Segoe UI", 15))
         self.button.grid(row=3, column=0, columnspan=2, pady=20)

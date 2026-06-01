@@ -1,6 +1,6 @@
-from aliment import Aliment
+from Aliment import Aliment
 from menu import Menu
-from inventaire import Inventaire
+from Inventaire import Inventaire
 from datetime import datetime, timedelta
 
 #on teste la recherche d'aliments

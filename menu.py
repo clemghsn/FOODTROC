@@ -1,13 +1,15 @@
 import customtkinter as ctk
 from PIL import Image
-from ajout import Ajout
-from inventaire import Inventaire
+from Ajout import Ajout
+from Inventaire import Inventaire
 from chat import Chat
 import webbrowser
 import csv
-from carte import Carte
+from Carte import Carte
 from datetime import datetime, timedelta
 from CTkMessagebox import CTkMessagebox
+import pygame
+
 
 class Menu(ctk.CTkFrame):
     """
@@ -82,6 +84,11 @@ class Menu(ctk.CTkFrame):
         self.button_rappel = ctk.CTkButton(self.frame, text="",image = self.img_rappel,command =self.afficher_rappels, width=0, height=0, fg_color ="transparent", border_width=0)
         self.button_rappel.grid(row=3, column=0,padx = 30, pady=(10,20), sticky="")
 
+        #voix
+        pygame.mixer.init()
+        pygame.mixer.music.load("no_waste_just_taste.mp3")
+        pygame.mixer.music.play()
+
     def affiche_carte(self):
         """
             Génère et affiche la carte interactive des utilisateurs.
@@ -89,7 +96,7 @@ class Menu(ctk.CTkFrame):
             Utilise la classe Carte pour créer un fichier HTML
             puis l'ouvre dans le navigateur web par défaut.
         """
-        carte = Carte()   # ta classe folium
+        carte = Carte()   # classe folium
         carte.generer()    # méthode qui crée map.html
         webbrowser.open("map.html")
 

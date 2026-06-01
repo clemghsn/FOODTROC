@@ -1,7 +1,7 @@
 import customtkinter as ctk
-from Login import Login
+from login import Login
 from menu import Menu
-from inventaire import Inventaire
+from Inventaire import Inventaire
 from posts import Posts
 
 ctk.set_default_color_theme("green")

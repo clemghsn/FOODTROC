@@ -42,7 +42,7 @@ class Carte:
                 - fichier_csv (str) : chemin du fichier CSV
 
             Retourne:
-                - list : liste de dictionnaires contenant les données utilisateurs
+                - users (list) : liste de dictionnaires contenant les données utilisateurs
         """
         users = []
 
