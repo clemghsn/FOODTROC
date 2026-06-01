@@ -27,7 +27,7 @@ class App(ctk.CTk):
                 - puis affiche directement la page de login
         """
         super().__init__()
-        self.geometry("625x625")
+        self.geometry("650x625")
         self.current_frame = None
         self.current_user = None
         self.show_frame("login")

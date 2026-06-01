@@ -10,6 +10,7 @@ class Inventaire(ctk.CTkFrame):
             - d'afficher les aliments de l'inventaire
             - de supprimer un aliment
             - de poster un aliment
+            - d'incrémenter la quantité de l'aliment
             - de mettre à jour l'affichage dynamiquement
     """
     
@@ -35,7 +36,7 @@ class Inventaire(ctk.CTkFrame):
         self.grid_rowconfigure(1, weight=1)
 
         self.header = ctk.CTkFrame(self, fg_color="transparent")
-        self.header.grid(row=0, column=0,sticky="ew", padx=20, pady=(20, 10))
+        self.header.grid(row=0, column=0,sticky="ew", padx=25, pady=(20, 10))
 
         self.header.grid_columnconfigure((0,1,2), weight=1)
 
@@ -43,7 +44,7 @@ class Inventaire(ctk.CTkFrame):
         self.title.grid(row=0, column=1)
 
         self.scroll = ctk.CTkScrollableFrame(self)
-        self.scroll.grid(row=1, column=0, sticky="nsew",padx=20, pady=10)
+        self.scroll.grid(row=1, column=0, sticky="nsew",padx=25, pady=10)
         self.afficher_inventaire()
 
         # bouton retour (optionnel)
@@ -77,7 +78,7 @@ class Inventaire(ctk.CTkFrame):
         """
 
         card = ctk.CTkFrame(self.scroll, corner_radius=10)
-        card.pack(fill="x", padx=15, pady=6)
+        card.pack(fill="x", padx=10, pady=5)
 
         # colonne extensible
         card.grid_columnconfigure(3, weight=1)
