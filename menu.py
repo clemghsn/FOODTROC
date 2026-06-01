@@ -52,22 +52,25 @@ class Menu(ctk.CTkFrame):
         self.frame.grid_rowconfigure(4, weight=1)
 
         self.label = ctk.CTkLabel(self.frame, text="",image = self.img_logo )
-        self.label.grid(row=0, column=0, columnspan=2, pady=(20,10))
+        self.label.grid(row=0, column=0, columnspan=3, pady=(20,10))
 
         self.mascotte = ctk.CTkLabel(self.frame, text="",image = self.img_mascotte) 
-        self.mascotte.grid(row=4, column=0,columnspan = 2, pady=(10,10), sticky = "n")
+        self.mascotte.grid(row=4, column=0,columnspan = 3, pady=(10,10), sticky = "n")
 
         self.button_inventaire = ctk.CTkButton(self.frame, text="",image = self.img_inventaire, width=0, height=0, fg_color ="transparent", border_width=0, command=self.affiche_inventaire)
-        self.button_inventaire.grid(row=1, column=0, padx=15, pady=10)
+        self.button_inventaire.grid(row=1, column=0, padx=40, pady=10)
 
         self.button_add = ctk.CTkButton(self.frame, text="", image = self.img_add, command = self.affiche_ajout, width=0, height=0, fg_color ="transparent", border_width=0)
         self.button_add.grid(row=1, column=1, padx=15, pady=10)
 
         self.button_carte = ctk.CTkButton(self.frame,text="", image = self.img_map, command = self.affiche_carte, width=0, height=0, fg_color ="transparent", border_width=0)
-        self.button_carte.grid(row=2, column=0, columnspan = 2, padx=15, pady=10)
+        self.button_carte.grid(row=2, column=0, columnspan = 3, padx=15, pady=10)
 
         self.button_logout = ctk.CTkButton(self.frame, text="",image = self.img_deco, command=self.logout, width=0, height=0, fg_color ="transparent", border_width=0)
-        self.button_logout.grid(row=3, column=1,padx = 15, pady=(10,20), sticky="n")
+        self.button_logout.grid(row=3, column=2,padx = 15, pady=(10,20), sticky="n")
+
+        self.button_chat = ctk.CTkButton(self.frame, text="",image = self.img_deco, command=self.affiche_chat, width=0, height=0, fg_color ="transparent", border_width=0)
+        self.button_chat.grid(row=3, column=1,padx = 15, pady=(10,20), sticky="n")
         
         self.button_rappel = ctk.CTkButton(self.frame, text="",image = self.img_rappel,command =self.afficher_rappels, width=0, height=0, fg_color ="transparent", border_width=0)
         self.button_rappel.grid(row=3, column=0,padx = 15, pady=(10,20), sticky="n")
@@ -94,6 +97,13 @@ class Menu(ctk.CTkFrame):
         new_window.title("Ajouter un aliment")
         new_window.geometry("320x350")
         Ajout(new_window, self.master.current_user)
+    
+    def affiche_posts(self):
+        """
+            Change la page actuelle vers les posts
+            via la fonction de navigation switch_page.
+        """
+        self.switch_page("posts")
 
     def affiche_inventaire(self):
         """
