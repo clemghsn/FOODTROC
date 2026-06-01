@@ -1,12 +1,14 @@
 import customtkinter as ctk
 from PIL import Image
-from ajout import Ajout
+from Ajout import Ajout
 from Inventaire import Inventaire
 import webbrowser
 import csv
-from carte import Carte
+from Carte import Carte
 from datetime import datetime, timedelta
 from CTkMessagebox import CTkMessagebox
+import pygame
+
 
 class Menu(ctk.CTkFrame):
     """
@@ -74,6 +76,11 @@ class Menu(ctk.CTkFrame):
         
         self.button_rappel = ctk.CTkButton(self.frame, text="",image = self.img_rappel,command =self.afficher_rappels, width=0, height=0, fg_color ="transparent", border_width=0)
         self.button_rappel.grid(row=3, column=0,padx = 15, pady=(10,20), sticky="n")
+
+        #voix
+        pygame.mixer.init()
+        pygame.mixer.music.load("no_waste_just_taste.mp3")
+        pygame.mixer.music.play()
 
     def affiche_carte(self):
         """
