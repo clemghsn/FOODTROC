@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from aliment import Aliment
-from inventaire import Inventaire
+from Inventaire import Inventaire
 import csv
 from datetime import datetime
 
@@ -54,7 +54,6 @@ class Ajout(ctk.CTkFrame):
 
         self.suggestion_frame = ctk.CTkFrame(self.card,corner_radius=10,border_width=1)
         
-
         self.entry_quantite = ctk.CTkEntry(self.card,placeholder_text="Quantité",height=40)
         self.entry_quantite.grid(row=3, column=0, padx=40, pady=10, sticky="ew")
 
@@ -131,6 +130,8 @@ class Ajout(ctk.CTkFrame):
                     
                     inventaire = ligne.get("inventaire", "")
                     aliments = inventaire.split("|") if inventaire else []
+                    
+                    # incrémenter la quantité si même aliment et même date
                     found = False
 
                     for i in range(len(aliments)):

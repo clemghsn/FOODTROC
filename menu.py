@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from PIL import Image
 from ajout import Ajout
-from inventaire import Inventaire
+from Inventaire import Inventaire
 import webbrowser
 import csv
 from carte import Carte
@@ -48,7 +48,6 @@ class Menu(ctk.CTkFrame):
         self.frame = ctk.CTkFrame(self, corner_radius=30, fg_color='#A0CF9B')
         self.frame.pack(padx = 50, pady=40, fill='both',expand = True)
 
-        self.frame.grid_columnconfigure(0, weight=1)
         self.frame.grid_columnconfigure(1, weight=1)
         self.frame.grid_rowconfigure(4, weight=1)
 
@@ -63,9 +62,6 @@ class Menu(ctk.CTkFrame):
 
         self.button_add = ctk.CTkButton(self.frame, text="", image = self.img_add, command = self.affiche_ajout, width=0, height=0, fg_color ="transparent", border_width=0)
         self.button_add.grid(row=1, column=1, padx=15, pady=10)
-
-        self.button_posts = ctk.CTkButton(self.frame, text="Posts", command = self.affiche_posts, width=0, height=0, fg_color ="transparent", border_width=0)
-        self.button_posts.grid(row=1, column=2, padx=15, pady=10)
 
         self.button_carte = ctk.CTkButton(self.frame,text="", image = self.img_map, command = self.affiche_carte, width=0, height=0, fg_color ="transparent", border_width=0)
         self.button_carte.grid(row=2, column=0, columnspan = 2, padx=15, pady=10)
@@ -83,7 +79,7 @@ class Menu(ctk.CTkFrame):
             Utilise la classe Carte pour créer un fichier HTML
             puis l'ouvre dans le navigateur web par défaut.
         """
-        carte = Carte()   # ta classe folium
+        carte = Carte()   # classe folium
         carte.generer()    # méthode qui crée map.html
         webbrowser.open("map.html")
 
@@ -98,13 +94,6 @@ class Menu(ctk.CTkFrame):
         new_window.title("Ajouter un aliment")
         new_window.geometry("320x350")
         Ajout(new_window, self.master.current_user)
-    
-    def affiche_posts(self):
-        """
-            Change la page actuelle vers les posts
-            via la fonction de navigation switch_page.
-        """
-        self.switch_page("posts")
 
     def affiche_inventaire(self):
         """
