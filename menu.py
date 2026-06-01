@@ -69,8 +69,8 @@ class Menu(ctk.CTkFrame):
         self.button_logout = ctk.CTkButton(self.frame, text="",image = self.img_deco, command=self.logout, width=0, height=0, fg_color ="transparent", border_width=0)
         self.button_logout.grid(row=3, column=2,padx = 15, pady=(10,20), sticky="n")
 
-        self.button_chat = ctk.CTkButton(self.frame, text="",image = self.img_deco, command=self.affiche_chat, width=0, height=0, fg_color ="transparent", border_width=0)
-        self.button_chat.grid(row=3, column=1,padx = 15, pady=(10,20), sticky="n")
+        #self.button_chat = ctk.CTkButton(self.frame, text="",image = self.img_deco, command=self.affiche_chat, width=0, height=0, fg_color ="transparent", border_width=0)
+        #self.button_chat.grid(row=3, column=1,padx = 15, pady=(10,20), sticky="n")
         
         self.button_rappel = ctk.CTkButton(self.frame, text="",image = self.img_rappel,command =self.afficher_rappels, width=0, height=0, fg_color ="transparent", border_width=0)
         self.button_rappel.grid(row=3, column=0,padx = 15, pady=(10,20), sticky="n")
