@@ -2,6 +2,7 @@ import customtkinter as ctk
 from PIL import Image
 from ajout import Ajout
 from inventaire import Inventaire
+from chat import Chat
 import webbrowser
 import csv
 from carte import Carte
@@ -37,19 +38,21 @@ class Menu(ctk.CTkFrame):
 
         # image
         self.img_add = ctk.CTkImage(light_image=Image.open("images/ajouter.png"), size=(200, 65))
-        self.img_map = ctk.CTkImage(light_image=Image.open("images/carte.png"), size=(450,75))
+        self.img_map = ctk.CTkImage(light_image=Image.open("images/carte.png"), size=(500,75))
         self.img_inventaire = ctk.CTkImage(light_image=Image.open("images/inventaire.png"), size=(200,65))
+        self.img_posts = ctk.CTkImage(light_image=Image.open("images/posts.png"), size=(200,65))
         self.img_logo= ctk.CTkImage(light_image=Image.open("images/logo.png"), size=(320, 110))
-        self.img_deco= ctk.CTkImage(light_image=Image.open("images/logout.png"), size=(215,45))
+        self.img_deco= ctk.CTkImage(light_image=Image.open("images/logout.png"), size=(150,30))
+        self.img_chat= ctk.CTkImage(light_image=Image.open("images/chat.png"), size=(150,30))
         self.img_mascotte= ctk.CTkImage(light_image=Image.open("images/mascotte.png"), size=(120,  100))
-        self.img_rappel= ctk.CTkImage(light_image=Image.open("images/rappel.png"), size=(215,  45))
+        self.img_rappel= ctk.CTkImage(light_image=Image.open("images/rappel.png"), size=(150,  30))
         self.switch_page = switch_page
         
         self.frame = ctk.CTkFrame(self, corner_radius=30, fg_color='#A0CF9B')
         self.frame.pack(padx = 50, pady=40, fill='both',expand = True)
 
         self.frame.grid_columnconfigure(0, weight=1)
-        self.frame.grid_columnconfigure(1, weight=1)
+        self.frame.grid_columnconfigure(2, weight=1)
         self.frame.grid_rowconfigure(4, weight=1)
 
         self.label = ctk.CTkLabel(self.frame, text="",image = self.img_logo )
@@ -59,25 +62,25 @@ class Menu(ctk.CTkFrame):
         self.mascotte.grid(row=4, column=0,columnspan = 3, pady=(10,10), sticky = "n")
 
         self.button_inventaire = ctk.CTkButton(self.frame, text="",image = self.img_inventaire, width=0, height=0, fg_color ="transparent", border_width=0, command=self.affiche_inventaire)
-        self.button_inventaire.grid(row=1, column=0, padx=40, pady=10)
+        self.button_inventaire.grid(row=1, column=0, padx=15, pady=10)
 
         self.button_add = ctk.CTkButton(self.frame, text="", image = self.img_add, command = self.affiche_ajout, width=0, height=0, fg_color ="transparent", border_width=0)
         self.button_add.grid(row=1, column=1, padx=15, pady=10)
 
-        self.button_posts = ctk.CTkButton(self.frame, text="Posts", command = self.affiche_posts, width=0, height=0, fg_color ="transparent", border_width=0)
+        self.button_posts = ctk.CTkButton(self.frame, text="",image = self.img_posts, command = self.affiche_posts, width=0, height=0, fg_color ="transparent", border_width=0)
         self.button_posts.grid(row=1, column=2, padx=15, pady=10)
 
         self.button_carte = ctk.CTkButton(self.frame,text="", image = self.img_map, command = self.affiche_carte, width=0, height=0, fg_color ="transparent", border_width=0)
         self.button_carte.grid(row=2, column=0, columnspan = 3, padx=15, pady=10)
 
         self.button_logout = ctk.CTkButton(self.frame, text="",image = self.img_deco, command=self.logout, width=0, height=0, fg_color ="transparent", border_width=0)
-        self.button_logout.grid(row=3, column=2,padx = 15, pady=(10,20), sticky="n")
+        self.button_logout.grid(row=3, column=2,padx = 30, pady=(10,20), sticky="")
 
-        self.button_chat = ctk.CTkButton(self.frame, text="",image = self.img_deco, command=self.affiche_chat, width=0, height=0, fg_color ="transparent", border_width=0)
-        self.button_chat.grid(row=3, column=1,padx = 15, pady=(10,20), sticky="n")
+        self.button_chat = ctk.CTkButton(self.frame, text="",image = self.img_chat, command=self.affiche_chat, width=0, height=0, fg_color ="transparent", border_width=0)
+        self.button_chat.grid(row=3, column=1,padx = 20, pady=(10,20), sticky="")
         
         self.button_rappel = ctk.CTkButton(self.frame, text="",image = self.img_rappel,command =self.afficher_rappels, width=0, height=0, fg_color ="transparent", border_width=0)
-        self.button_rappel.grid(row=3, column=0,padx = 15, pady=(10,20), sticky="n")
+        self.button_rappel.grid(row=3, column=0,padx = 30, pady=(10,20), sticky="")
 
     def affiche_carte(self):
         """
@@ -104,14 +107,14 @@ class Menu(ctk.CTkFrame):
     
     def affiche_chat(self):
         """
-            Ouvre une nouvelle fenêtre permettant d'envoyer des messages aux autres utilisateurs.
+            Ouvre une nouvelle fenêtre permettant d'accèder aux conversations de l'utilisateur.
 
             Transmet l'utilisateur courant à la fenêtre Messageries.
             """
         new_window = ctk.CTkToplevel(self)
         new_window.title("Messagerie")
         new_window.geometry("320x350")
-        Ajout(new_window, self.master.current_user)
+        Chat(new_window, self.master.current_user)
 
     def affiche_posts(self):
         """
