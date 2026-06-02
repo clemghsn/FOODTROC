@@ -5,7 +5,7 @@ from Inventaire import Inventaire
 from chat import Chat
 import webbrowser
 import csv
-from carte import Carte
+from Carte import Carte
 from datetime import datetime, timedelta
 from CTkMessagebox import CTkMessagebox
 import pygame
@@ -38,7 +38,7 @@ class Menu(ctk.CTkFrame):
         self.switch_page = switch_page
         self.users = self.charger_donnees("users.csv")
 
-        # image
+        # images
         self.img_add = ctk.CTkImage(light_image=Image.open("images/ajouter.png"), size=(200, 65))
         self.img_map = ctk.CTkImage(light_image=Image.open("images/carte.png"), size=(500,75))
         self.img_inventaire = ctk.CTkImage(light_image=Image.open("images/inventaire.png"), size=(200,65))

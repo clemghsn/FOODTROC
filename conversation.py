@@ -26,6 +26,7 @@ class Conversation(ctk.CTkFrame):
         """
         super().__init__(master)
         self.current_user = current_user
+        self.user2 = user2
         self.pack(fill="both", expand=True)
 
         #récupération des conversations
@@ -140,7 +141,10 @@ class Conversation(ctk.CTkFrame):
         """
 
         card = ctk.CTkFrame(self.scroll, corner_radius=10)
-        card.pack(padx=10, pady=5, sticky = "w")
+        if message["etat"] == "reçu":
+            card.pack(padx=10, pady=5, side = "left")
+        else :
+            card.pack(padx=10, pady=5, side = "right")
 
         # colonne extensible
         card.grid_columnconfigure(3, weight=1)
@@ -155,7 +159,7 @@ class Conversation(ctk.CTkFrame):
         label_heure.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
     
-    def enregister_message(self, nom, qte, date):
+    def enregister_message(self):
         """
             Ajoute un message dans le chat.
 
@@ -164,48 +168,31 @@ class Conversation(ctk.CTkFrame):
                 - qte (int ou str) : quantité de l'aliment.
                 - date (str) : date de péremption au format JJ/MM/AAAA.
         """
-        fichier = 'users.csv'
-        users = []
-
-        qte = int(qte)
+        fichier = 'chat.csv'
+        messages = []
 
         with open(fichier, mode='r', newline='', encoding='utf-8') as f:
             lecteur = csv.DictReader(f)
             colonnes = lecteur.fieldnames  
 
             for ligne in lecteur:
-                
-                ligne.setdefault("inventaire", "")
 
-                if ligne["id_user"] == self.current_user:
-                    
-                    inventaire = ligne.get("inventaire", "")
-                    aliments = inventaire.split("|") if inventaire else []
-                    found = False
+                sender = ligne["sender"]
+                receiver = ligne["receiver"]
+                text = ligne["messages"]
 
-                    for i in range(len(aliments)):
+                new_ligne = f"{sender}:{receiver}:{text}"
 
-                        if not aliments[i]:
-                            continue
-                        
-                        try : 
-                            n, q, d = aliments[i].split(":")
-                            q = int(q)
+                messages.append(new_ligne)
 
-                            if n == nom and d == date:
-                                aliments[i] = f"{n}:{q + qte}:{d}"
-                                found = True
-                                break
-
-                        except ValueError:
-                            continue
-
-                    if not found:
-                        aliments.append(f"{nom}:{qte}:{date}")
-
-                    ligne["inventaire"] = "|".join(aliments)
-
-                users.append(ligne)
+        #nouveau message
+        message = self.entry_text.get()
+        date = datetime.today().date()
+        time = str(datetime.today().time()).split(":")
+        heure = f"{time[0]}h{time[1]}"
+        text = f"{message}:{date}:{heure}"
+        new_mess = f"{self.current_user}:{self.user2}:{text}"
+        messages.append(new_mess)
 
         with open(fichier, mode='w', newline='', encoding='utf-8') as f:
 
