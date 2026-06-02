@@ -5,7 +5,7 @@ from inventaire import Inventaire
 from chat import Chat
 import webbrowser
 import csv
-from carte import Carte
+from Carte import Carte
 from datetime import datetime, timedelta
 from CTkMessagebox import CTkMessagebox
 import pygame
@@ -20,7 +20,9 @@ class Menu(ctk.CTkFrame):
         Elle permet :
             - d'accéder à l'inventaire,
             - d'ajouter un aliment,
+            - d'accéder aux aliments postés,
             - d'afficher la carte des utilisateurs,
+            - d'accéder à la messagerie,
             - de se déconnecter,
             - d'afficher des rappels d'aliments proches de la péremption.
     """
@@ -39,7 +41,7 @@ class Menu(ctk.CTkFrame):
         self.switch_page = switch_page
         self.users = self.charger_donnees("users.csv")
 
-        # image
+        # images
         self.img_add = ctk.CTkImage(light_image=Image.open("images/ajouter.png"), size=(200, 65))
         self.img_map = ctk.CTkImage(light_image=Image.open("images/carte.png"), size=(500,75))
         self.img_inventaire = ctk.CTkImage(light_image=Image.open("images/inventaire.png"), size=(200,65))

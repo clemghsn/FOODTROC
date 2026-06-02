@@ -131,6 +131,10 @@ class Chat(ctk.CTkFrame):
         for user2 in self.chat_user.keys():
             self.create_card(user2)
 
+        if len(self.chat_user.keys()) == 0:
+            self.label = ctk.CTkLabel(self.scroll,text="Aucune conversation",font=("Arial", 16, "bold"))
+            self.label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
+
     def create_card(self, user2):
         """
             Crée une carte représentant une conversation.
@@ -212,7 +216,7 @@ class Chat(ctk.CTkFrame):
             widget.destroy()
 
         #récupération des conversations
-        self.chat_user = self.charger_conv("chat.csv")
+        self.chat, self.chat_user = self.charger_conv("chat.csv")
 
         self.afficher_chat()
 
@@ -228,12 +232,16 @@ class Chat(ctk.CTkFrame):
             Si les données sont valides :
                 - une nouvelle fenêtre de conversation s'ouvre
         """
-        user = self.entry_user.get()
-            
-        if isinstance(self.master, ctk.CTkToplevel): # ferme la fenêtre de saisie après l'ajout
-                self.master.destroy()
-        else:
-            print("Erreur : Cet utilisateur n'est pas connu")
+        user2 = self.entry_user.get()
+        conv = self.chat_user.get(user2,"")
+        new_window = ctk.CTkToplevel(self)
+        new_window.title(user2)
+        new_window.geometry("320x350")
+
+        Conversation(new_window, self.master.current_user, user2, conv)
+
+        #else:
+            #print("Erreur : Cet utilisateur n'est pas connu")
 
 
     def chercher_user(self, nom_recherche):

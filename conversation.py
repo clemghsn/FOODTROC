@@ -26,10 +26,12 @@ class Conversation(ctk.CTkFrame):
         """
         super().__init__(master)
         self.current_user = current_user
+        self.user2 = user2
+        self.conv = conv
         self.pack(fill="both", expand=True)
 
         #récupération des conversations
-        self.messages = self.charger_conv(conv)
+        self.messages = self.charger_conv(self.conv)
 
         #images
         self.img_send = ctk.CTkImage(light_image=Image.open("images/send.png"), size=(20, 20))
@@ -48,22 +50,18 @@ class Conversation(ctk.CTkFrame):
         self.card.grid_propagate(False)
 
         self.card.grid_columnconfigure(0, weight=1)
-        self.card.grid_columnconfigure(1, weight=1)
-        self.card.grid_columnconfigure(2, weight=2)
         self.card.grid_rowconfigure(0, weight=1)
 
 
         self.title = ctk.CTkLabel(self.card,text=user2,font=ctk.CTkFont(size=14, weight="bold"))
-        self.title.grid(row=0, column=0, columnspan =2, pady=10,sticky="wn")
+        self.title.grid(row=0, column=0, pady=10)
 
 
-        # Bouton retour
-        self.button_back = ctk.CTkButton(self.card,text="←",height=15,corner_radius=10)
-        self.button_back.grid(row=0, column=2, padx=10, pady=10, sticky="n")
 
         # Conversations
         self.scroll = ctk.CTkScrollableFrame(self)
         self.scroll.grid(row=1, column=0, columnspan = 3, sticky="nsew",padx=30, pady=10)
+        self.scroll.grid_columnconfigure((0,1,2), weight=1)
         self.afficher_chat()
 
         # carte nouveau message
@@ -122,10 +120,16 @@ class Conversation(ctk.CTkFrame):
         """
             Affiche mes messages.
         """
+        i=0
         for message in self.messages:
-            self.create_card(message)
+            self.create_card(message,i)
+            i+=1
 
-    def create_card(self, message):
+        if len(self.messages)==0 :
+            self.label = ctk.CTkLabel(self.scroll,text="Aucun message pour le moment",font=("Arial", 12, "bold"))
+            self.label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
+
+    def create_card(self, message,i):
         """
             Crée une carte représentant un message.
 
@@ -139,10 +143,16 @@ class Conversation(ctk.CTkFrame):
                 les informations du message.
         """
 
-        card = ctk.CTkFrame(self.scroll, corner_radius=10)
-        card.pack(padx=10, pady=5, sticky = "w")
+        
+        if message["etat"] == "reçu":
+            card = ctk.CTkFrame(self.scroll, corner_radius=10, fg_color = '#A0CF9B', width=300, height=20)
+            card.grid(row=[i], column=0,padx=10, pady=5, columnspan = 2, sticky="w",ipadx=0)
+        else :
+            card = ctk.CTkFrame(self.scroll, corner_radius=10, width=300, height=20)
+            card.grid(row=[i], column=1, padx=10, pady=5 , columnspan = 2, sticky='e',ipadx=0)
 
         # colonne extensible
+        card.grid_propagate(True)
         card.grid_columnconfigure(3, weight=1)
 
         label_date = ctk.CTkLabel(card,text=message["date"],font=("Arial", 10, "bold"))
@@ -155,7 +165,7 @@ class Conversation(ctk.CTkFrame):
         label_heure.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
     
-    def enregister_message(self, nom, qte, date):
+    def enregister_message(self):
         """
             Ajoute un message dans le chat.
 
@@ -164,54 +174,72 @@ class Conversation(ctk.CTkFrame):
                 - qte (int ou str) : quantité de l'aliment.
                 - date (str) : date de péremption au format JJ/MM/AAAA.
         """
-        fichier = 'users.csv'
-        users = []
-
-        qte = int(qte)
+        fichier = 'chat.csv'
+        messages = []
 
         with open(fichier, mode='r', newline='', encoding='utf-8') as f:
             lecteur = csv.DictReader(f)
             colonnes = lecteur.fieldnames  
 
             for ligne in lecteur:
-                
-                ligne.setdefault("inventaire", "")
+                messages.append(ligne)
 
-                if ligne["id_user"] == self.current_user:
-                    
-                    inventaire = ligne.get("inventaire", "")
-                    aliments = inventaire.split("|") if inventaire else []
-                    found = False
-
-                    for i in range(len(aliments)):
-
-                        if not aliments[i]:
-                            continue
-                        
-                        try : 
-                            n, q, d = aliments[i].split(":")
-                            q = int(q)
-
-                            if n == nom and d == date:
-                                aliments[i] = f"{n}:{q + qte}:{d}"
-                                found = True
-                                break
-
-                        except ValueError:
-                            continue
-
-                    if not found:
-                        aliments.append(f"{nom}:{qte}:{date}")
-
-                    ligne["inventaire"] = "|".join(aliments)
-
-                users.append(ligne)
+        #nouveau message
+        message = self.entry_text.get()
+        date = datetime.today().date()
+        time = str(datetime.today().time()).split(":")
+        heure = f"{time[0]}h{time[1]}"
+        text = f"{message}:{date}:{heure}"
+        new_mess = {"sender":self.current_user,"receiver":self.user2,"messages":text}
+        messages.append(new_mess)
 
         with open(fichier, mode='w', newline='', encoding='utf-8') as f:
 
             writer = csv.DictWriter(f, fieldnames=colonnes)
             writer.writeheader()
-            for user in users:
-                writer.writerow(user)
+            for mess in messages:
+                writer.writerow(mess)
 
-        print(f"{nom} ajouté à l'inventaire de {self.current_user}")
+        print(f"{self.current_user} a envoyé un message à {self.user2}")
+
+        self.refresh()
+
+    def refresh(self):
+        """
+            Recharge les données de la conversation puis met à jour
+            l'affichage des cartes dans l'interface graphique.
+        """
+        for widget in self.scroll.winfo_children():
+            widget.destroy()
+
+        fichier_csv = "chat.csv"
+        conv = {}
+        chat = []
+
+        with open(fichier_csv, mode='r', encoding='utf-8') as f:
+
+            lecteur = csv.DictReader(f)
+
+            for ligne in lecteur:
+                
+                chat.append(ligne)
+
+                if ligne["sender"] == self.current_user:
+                    message = conv.get(ligne["receiver"],"")
+                    text = ligne["messages"]
+                    print(text)
+                    message = f"{message}|{text}:envoyé"
+                    conv[ligne["receiver"]] = message
+                    
+                elif ligne["receiver"] == self.current_user:
+                    message = conv.get(ligne["sender"],"")
+                    text = ligne["messages"]
+                    message = f"{message}|{text}:reçu"
+                    conv[ligne["sender"]] = message
+            
+    
+        self.chat, self.chat_user = chat, conv
+        conv = self.chat_user[self.user2]
+        self.messages = self.charger_conv(conv)
+
+        self.afficher_chat()
