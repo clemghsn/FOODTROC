@@ -65,22 +65,24 @@ class Conversation(ctk.CTkFrame):
         self.afficher_chat()
 
         # carte nouveau message
-        self.card2 = ctk.CTkFrame(self, corner_radius=15, width=300, height=50)
-        self.card2.grid(row=3, column=0, columnspan = 3)
-        self.card2.grid_propagate(False)
+        self.card2 = ctk.CTkFrame(self, corner_radius=15, width=300, height=20)
+        self.card2.grid(row=3, column=0, columnspan = 3, pady=5)
+        self.card2.grid_propagate(True)
 
-        self.card2.grid_columnconfigure(0, weight=1)
-        self.card2.grid_columnconfigure(1, weight=1)
-        self.card2.grid_columnconfigure(2, weight=2)
+        #self.card2.grid_columnconfigure(0, weight=1)
+        #self.card2.grid_columnconfigure(1, weight=1)
+        #self.card2.grid_columnconfigure(2, weight=2)
         #self.card2.grid_columnconfigure(2, weight=2)
 
         # Entrée
         self.entry_text = ctk.CTkEntry(self.card2,placeholder_text="Nouveau message",height=20)
-        self.entry_text.grid(row=0, column=0, columnspan=2, padx=20, pady=30)
+        #self.entry_text.grid(row=0, column=0, columnspan=2, padx=20, pady=30)
+        self.entry_text.pack(padx=20, pady=30, side="left")
 
         # Bouton envoi
         self.button_send = ctk.CTkButton(self.card2,text="",image = self.img_send, height=45,corner_radius=10, fg_color = "transparent", command=self.enregister_message)
-        self.button_send.grid(row=0, column=2, padx=20, pady=20)
+        #self.button_send.grid(row=0, column=2, padx=20, pady=20)
+        self.button_send.pack(padx=20, pady=30, side="right")
 
     def charger_conv(self, conv):
         """
