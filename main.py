@@ -3,6 +3,7 @@ from login import Login
 from menu import Menu
 from inventaire import Inventaire
 from posts import Posts
+from chat import Chat
 
 ctk.set_default_color_theme("green")
 
@@ -60,6 +61,9 @@ class App(ctk.CTk):
 
         elif page == "posts":
             self.current_frame = Posts(self, self.show_frame)
+
+        elif page == "chat":
+            self.current_frame = Chat(self, self.show_frame)
 
         self.current_frame.pack(fill="both", expand=True)
 
