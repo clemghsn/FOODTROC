@@ -140,7 +140,7 @@ class Conversation(ctk.CTkFrame):
 
         
         if message["etat"] == "reçu":
-            card = ctk.CTkFrame(self.scroll, corner_radius=10, fg_color = '#A0CF9B', width=300, height=20)
+            card = ctk.CTkFrame(self.scroll, corner_radius=10, fg_color = '#81B87B', width=300, height=20)
             card.grid(row=[i], column=0,padx=10, pady=5, columnspan = 2, sticky="w",ipadx=0)
         else :
             card = ctk.CTkFrame(self.scroll, corner_radius=10, width=300, height=20)
