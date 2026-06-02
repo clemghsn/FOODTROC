@@ -9,6 +9,7 @@ from Carte import Carte
 from datetime import datetime, timedelta
 from CTkMessagebox import CTkMessagebox
 import pygame
+from math import *
 
 
 class Menu(ctk.CTkFrame):
@@ -191,9 +192,14 @@ class Menu(ctk.CTkFrame):
             date_peremption = datetime.strptime(date, "%d/%m/%Y")
             diff = (date_peremption - today).days + 1
 
-            if 0 <= diff <= 3:
+            if 0 < diff <= 3:
 
-                rappels.append(f"{nom} expire dans {diff} jours")
+                rappels.append(f"- {nom} expire dans {diff} jours")
+            elif diff == 0 :
+                rappels.append(f"- {nom} expire aujourd'hui")
+            elif diff < 0:
+                rappels.append(f"- {nom} a expiré depuis {abs(diff)} jours")
+
         return rappels
 
     def afficher_rappels(self):
