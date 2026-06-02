@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from PIL import Image
 from Ajout import Ajout
-from Inventaire import Inventaire
+from inventaire import Inventaire
 from chat import Chat
 import webbrowser
 import csv
@@ -118,10 +118,7 @@ class Menu(ctk.CTkFrame):
 
             Transmet l'utilisateur courant à la fenêtre Messageries.
             """
-        new_window = ctk.CTkToplevel(self)
-        new_window.title("Messagerie")
-        new_window.geometry("320x350")
-        Chat(new_window, self.master.current_user)
+        self.switch_page("chat")
 
     def affiche_posts(self):
         """

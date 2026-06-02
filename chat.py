@@ -1,4 +1,6 @@
 import customtkinter as ctk
+from aliment import Aliment
+from inventaire import Inventaire
 import csv
 from PIL import Image
 from datetime import datetime
@@ -13,7 +15,7 @@ class Chat(ctk.CTkFrame):
             - de rechercher un utilisateur pour démarrer une nouvelle conversation
     """
 
-    def __init__(self, master, current_user):
+    def __init__(self, master, switch_page):
         """
             Initialise la fenêtre de messagerie.
 
@@ -22,56 +24,63 @@ class Chat(ctk.CTkFrame):
                 - current_user (str) : identifiant de l'utilisateur connecté.
         """
         super().__init__(master)
-        self.current_user = current_user
-        self.pack(fill="both", expand=True)
-
-        #images
-        self.img_bin = ctk.CTkImage(light_image=Image.open("images/poubelle.png"), size=(20, 20))
+        self.switch_page = switch_page
 
         #récupération des conversations
         self.chat, self.chat_user = self.charger_conv("chat.csv")
 
+        # image
+
+        self.img_bin = ctk.CTkImage(Image.open("images/poubelle.png"), size=(18, 18))
 
         # centrer le contenu
-        self.grid_columnconfigure(0, weight=0)
-        self.grid_columnconfigure(1, weight=5)
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=5)
-        self.grid_rowconfigure(2, weight=1)
+        self.grid_rowconfigure(0, weight=0)
+        self.grid_rowconfigure(1, weight=0)
+        self.grid_rowconfigure(2, weight=0)
         self.grid_rowconfigure(3, weight=1)
+        self.grid_columnconfigure(0, weight=1)
 
-        # carte centrale 
-        self.card = ctk.CTkFrame(self, corner_radius=15, width=300, height=50)
-        self.card.grid(row=0, column=0, columnspan = 4)
-        self.card.grid_propagate(False)
-        #self.card.grid_columnconfigure(0, weight=1)
-        
+        # Header
 
-        self.title = ctk.CTkLabel(self,text="Messagerie",font=ctk.CTkFont(size=20, weight="bold"))
-        self.title.grid(row=0, column=0, columnspan = 2, pady=15, sticky="n")
+        self.header = ctk.CTkFrame(self, fg_color="transparent")
+        self.header.grid(row=0, column=0,sticky="ew", padx=25, pady=(20, 10))
+        self.header.grid_columnconfigure(1, weight=1)
+ 
+        self.title = ctk.CTkLabel(self.header,text="Messagerie",font=ctk.CTkFont(size=22, weight="bold"))
+        self.title.grid(row=0, column=1)
+
+        # Bouton retour
+        self.button_back = ctk.CTkButton(self.header,text="←",width=40,command=lambda: self.switch_page("menu"))
+        self.button_back.grid(row=0, column=2, sticky="e")
+
+        # Search Frame
+
+        self.search_frame = ctk.CTkFrame(self)
+        self.search_frame.grid(row=2, column=0, sticky="ew", padx=25)
+        self.search_frame.grid_columnconfigure(0, weight=1)
+
+        self.label_new = ctk.CTkLabel(self.search_frame,text="Nouvelle conversation",font=("Arial", 14, "bold"))
+        self.label_new.grid(row=0, column=0, columnspan=2, sticky="w", padx=10, pady=10)
+
+        # Entrée + bouton
+
+        self.entry_user = ctk.CTkEntry(self.search_frame,placeholder_text="Recherche utilisateur")
+        self.entry_user.grid(row=1, column=0, sticky="ew", padx=(0, 10))
+        self.entry_user.bind("<KeyRelease>", self.update_suggestions)
+
+        self.button_new = ctk.CTkButton(self.search_frame, text="Ecrire",width=120,command=self.afficher_new_conv)
+        self.button_new.grid(row=1, column=1)
+
 
         # Conversations
         self.scroll = ctk.CTkScrollableFrame(self)
-        self.scroll.grid(row=1, column=0, columnspan = 2, sticky="nsew", padx=25, pady=10)
+        self.scroll.grid(row=3, column=0, sticky="nsew", padx=25, pady=10)
         self.afficher_chat()
 
-        self.label_new = ctk.CTkLabel(self,text="Nouvelle conversation",font=("Arial", 14, "bold"))
-        self.label_new.grid(row=2, column=0, columnspan = 2, padx=40, pady=15, sticky="w")
+        self.suggestion_frame = ctk.CTkFrame(self.search_frame)
+        self.suggestion_frame.grid(row=1, column=0, columnspan=2, sticky="ew", pady=(5, 0))
+        self.suggestion_frame.grid_remove()
 
-        # Entrée
-        self.entry_user = ctk.CTkEntry(self,placeholder_text="Recherche utilisateur",height=40)
-        self.entry_user.grid(row=3, column=0, padx=10, pady=20, sticky="ew")
-
-        # détecter quand on tape
-        self.entry_user.bind("<KeyRelease>", self.update_suggestions)
-
-        self.suggestion_frame = ctk.CTkFrame(self,corner_radius=10,border_width=1)
-
-        # Bouton nouvelle conv
-        self.button_new = ctk.CTkButton(self,text="Ecrire",height=45,corner_radius=10,command=self.afficher_new_conv)
-        self.button_new.grid(row=3, column=1, padx=20, pady=20, sticky="ew")
-
-    
     def charger_conv(self, fichier_csv):
         """
             Charge les conversations des utilisateurs depuis un fichier CSV.
@@ -99,14 +108,14 @@ class Chat(ctk.CTkFrame):
                 
                 chat.append(ligne)
 
-                if ligne["sender"] == self.current_user:
+                if ligne["sender"] == self.master.current_user:
                     message = conv.get(ligne["receiver"],"")
                     text = ligne["messages"]
                     print(text)
                     message = f"{message}|{text}:envoyé"
                     conv[ligne["receiver"]] = message
                     
-                elif ligne["receiver"] == self.current_user:
+                elif ligne["receiver"] == self.master.current_user:
                     message = conv.get(ligne["sender"],"")
                     text = ligne["messages"]
                     message = f"{message}|{text}:reçu"
@@ -145,10 +154,10 @@ class Chat(ctk.CTkFrame):
         label_nom.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
         button_ouvrir = ctk.CTkButton(card,text="Ouvrir",font=("Arial", 12, "bold"), width=3, corner_radius=15, fg_color = "grey", command=lambda a=user2: self.afficher_conv(a))
-        button_ouvrir.grid(row=0, column=1, padx=(0, 5), pady=5)
+        button_ouvrir.grid(row=0, column=1, padx=(0, 5), pady=5, sticky="e")
     
         button_supprimer = ctk.CTkButton(card,text="", image = self.img_bin, width=3, corner_radius=15, fg_color = "transparent", command=lambda a=user2: self.suppr_conv(a))
-        button_supprimer.grid(row=0, column=2, padx=(0, 3), pady=5)
+        button_supprimer.grid(row=0, column=2, padx=(0, 3), pady=5, sticky="e")
 
     def afficher_conv(self, user2):
         """
@@ -159,7 +168,7 @@ class Chat(ctk.CTkFrame):
         new_window = ctk.CTkToplevel(self)
         new_window.title(user2)
         new_window.geometry("320x350")
-        Conversation(new_window, self.current_user, user2, self.chat_user[user2])
+        Conversation(new_window, self.master.current_user, user2, self.chat_user[user2])
 
     def suppr_conv(self, user2):
         """
@@ -171,7 +180,7 @@ class Chat(ctk.CTkFrame):
 
         for ligne in self.chat:
 
-                if (ligne["sender"] == self.current_user and ligne["receiver"] == user2) or (ligne["receiver"] == self.current_user and ligne["sender"] == user2):
+                if (ligne["sender"] == self.master.current_user and ligne["receiver"] == user2) or (ligne["receiver"] == self.master.current_user and ligne["sender"] == user2):
                     continue #on continue, la ligne n'est pas sauvegardée
 
                 else :
@@ -179,9 +188,13 @@ class Chat(ctk.CTkFrame):
                     receiver = ligne["receiver"]
                     text = ligne["messages"]
 
-                    new_ligne = f"{sender}:{receiver}:{text}"
+                    
 
-                messages.append(new_ligne)
+                messages.append({
+                    "sender" : sender,
+                    "receiver" : receiver,
+                    "messages" : text
+                })
 
         with open(fichier, mode="w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=["sender","receiver","messages"])
@@ -199,7 +212,7 @@ class Chat(ctk.CTkFrame):
             widget.destroy()
 
         #récupération des conversations
-        self.chat, self.chat_user = self.charger_conv("chat.csv")
+        self.chat_user = self.charger_conv("chat.csv")
 
         self.afficher_chat()
 
@@ -215,16 +228,30 @@ class Chat(ctk.CTkFrame):
             Si les données sont valides :
                 - une nouvelle fenêtre de conversation s'ouvre
         """
-        aliment = self.entry_aliment.get()
-        quantite = self.entry_quantite.get()
-        date = self.entry_date.get()
-
+        user = self.entry_user.get()
             
         if isinstance(self.master, ctk.CTkToplevel): # ferme la fenêtre de saisie après l'ajout
                 self.master.destroy()
         else:
             print("Erreur : Cet utilisateur n'est pas connu")
 
+
+    def chercher_user(self, nom_recherche):
+        """
+            Recherche les aliments contenant le texte saisi
+            par l'utilisateur -> utilisée dans Ajout
+
+            Paramètre:
+                - nom_recherche (str) : texte recherché.
+
+            Retourne:
+                - list : liste des aliments correspondants.
+        """
+        nom_recherche = nom_recherche.lower()
+
+        resultats = [ nom for nom in self.users.keys() if nom_recherche in nom]
+
+        return resultats
 
     # Pour le menu déroulant
     def update_suggestions(self, event):
@@ -247,7 +274,7 @@ class Chat(ctk.CTkFrame):
             self.suggestion_frame.grid_remove()
             return
 
-        suggestions = Aliment.chercher_aliment(texte)
+        suggestions = self.chercher_user(texte)
 
         if suggestions:
 
@@ -258,8 +285,8 @@ class Chat(ctk.CTkFrame):
                 sticky="ew"
             )
 
-            for aliment in suggestions[:5]:
-                button = ctk.CTkButton(self.suggestion_frame,text=aliment,anchor="w",fg_color="transparent",hover_color=("gray80", "gray25"),command=lambda a=aliment: self.select_suggestion(a))
+            for user in suggestions[:5]:
+                button = ctk.CTkButton(self.suggestion_frame,text=user,anchor="w",fg_color="transparent",hover_color=("gray80", "gray25"),command=lambda a=user: self.select_suggestion(a))
                 button.pack(fill="x", padx=5, pady=2)
 
 

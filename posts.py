@@ -1,6 +1,6 @@
 import customtkinter as ctk
 import csv
-from Inventaire import Inventaire
+from inventaire import Inventaire
 
 class Posts(ctk.CTkFrame):
     """
@@ -36,7 +36,7 @@ class Posts(ctk.CTkFrame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
 
-        self.header = ctk.CTkFrame(self, fg_color='#A0CF9B')
+        self.header = ctk.CTkFrame(self, fg_color="transparent")
         self.header.grid(row=0, column=0,sticky="ew", padx=20, pady=(20, 10))
 
         self.header.grid_columnconfigure((0,1,2), weight=1)
@@ -44,8 +44,8 @@ class Posts(ctk.CTkFrame):
         self.title = ctk.CTkLabel(self.header,text="Posts",font=ctk.CTkFont(size=22, weight="bold"))
         self.title.grid(row=0, column=1)
 
-        self.scroll = ctk.CTkScrollableFrame(self, fg_color='#A0CF9B')
-        self.scroll.grid(row=1, column=0, sticky="nsew",padx=20, pady=10)
+        self.scroll = ctk.CTkScrollableFrame(self)
+        self.scroll.grid(row=1, column=0, sticky="nsew",padx=25, pady=10)
         self.afficher_posts()
 
         # bouton retour (optionnel)

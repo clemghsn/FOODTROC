@@ -1,8 +1,9 @@
 import customtkinter as ctk
 from login import Login
 from menu import Menu
-from Inventaire import Inventaire
+from inventaire import Inventaire
 from posts import Posts
+from chat import Chat
 
 ctk.set_default_color_theme("green")
 
@@ -27,7 +28,6 @@ class App(ctk.CTk):
                 - puis affiche directement la page de login
         """
         super().__init__()
-        self.geometry("650x625")
         self.current_frame = None
         self.current_user = None
         self.show_frame("login")
@@ -61,6 +61,9 @@ class App(ctk.CTk):
 
         elif page == "posts":
             self.current_frame = Posts(self, self.show_frame)
+
+        elif page == "chat":
+            self.current_frame = Chat(self, self.show_frame)
 
         self.current_frame.pack(fill="both", expand=True)
 
