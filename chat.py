@@ -1,20 +1,18 @@
 import customtkinter as ctk
 from aliment import Aliment
-from Inventaire import Inventaire
+from inventaire import Inventaire
 import csv
+from PIL import Image
 from datetime import datetime
+from conversation import Conversation
 
 class Chat(ctk.CTkFrame):
     """
-        Fenêtre permettant à un utilisateur d'envoyer des messages
-        à d'autres utilisateurs.
+        Fenêtre permettant à un utilisateur d'accéder à ses conversations avec les autres utilisateurs.
 
-        Cette interface contient :
-            - un champ de saisie du nom de l'aliment,
-            - un champ de quantité,
-            - un champ de date de péremption,
-            - ,
-            - un bouton d'ajout dans le fichier users.csv.
+        Cette classe permet :
+            - d'afficher les conversations de l'utilisateur
+            - de rechercher un utilisateur pour démarrer une nouvelle conversation
     """
 
     def __init__(self, master, current_user):
@@ -28,47 +26,53 @@ class Chat(ctk.CTkFrame):
         super().__init__(master)
         self.current_user = current_user
         self.pack(fill="both", expand=True)
+
         #récupération des conversations
         self.chat = self.charger_conv("chat.csv")
-        self.users = self.charger_conv("users.csv")
         
 
         # centrer le contenu
-        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=0)
+        self.grid_columnconfigure(1, weight=5)
         self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=5)
+        self.grid_rowconfigure(2, weight=1)
+        self.grid_rowconfigure(3, weight=1)
 
         # carte centrale 
-        self.card = ctk.CTkFrame(self, corner_radius=15, width=320, height=350)
-        self.card.grid(row=0, column=0)
+        self.card = ctk.CTkFrame(self, corner_radius=15, width=300, height=50)
+        self.card.grid(row=0, column=0, columnspan = 4)
         self.card.grid_propagate(False)
 
 
         self.card.grid_columnconfigure(0, weight=1)
 
-        self.title = ctk.CTkLabel(self.card,text="Messagerie",font=ctk.CTkFont(size=20, weight="bold"))
-        self.title.grid(row=0, column=0, pady=(20, 5))
+
+        self.title = ctk.CTkLabel(self,text="Messagerie",font=ctk.CTkFont(size=20, weight="bold"))
+        self.title.grid(row=0, column=0, columnspan = 2, pady=15, sticky="n")
 
         # Conversations
         self.scroll = ctk.CTkScrollableFrame(self)
-        self.scroll.grid(row=1, column=0, sticky="nsew",padx=25, pady=10)
+        self.scroll.grid(row=1, column=0, columnspan = 2, sticky="nsew", padx=25, pady=10)
         self.afficher_chat()
 
-        self.label_new = ctk.CTkLabel(self.card,text="Nouvelle conversation",font=("Arial", 14, "bold"))
-        self.label_new.grid(row=2, column=0, padx=10, pady=10, sticky="w")
+        self.label_new = ctk.CTkLabel(self,text="Nouvelle conversation",font=("Arial", 14, "bold"))
+        self.label_new.grid(row=2, column=0, columnspan = 2, padx=40, pady=15, sticky="w")
 
         # Entrée
-        self.entry_user = ctk.CTkEntry(self.card,placeholder_text="Recherche utilisateur",height=40)
-        self.entry_user.grid(row=1, column=0, padx=40, pady=10, sticky="ew")
+        self.entry_aliment = ctk.CTkEntry(self.card,placeholder_text="Recherche utilisateur",height=40)
+        self.entry_aliment.grid(row=1, column=0, padx=40, pady=10, sticky="ew")
 
         # détecter quand on tape
         self.entry_user.bind("<KeyRelease>", self.update_suggestions)
 
-        self.suggestion_frame = ctk.CTkFrame(self.card,corner_radius=10,border_width=1)
+        self.suggestion_frame = ctk.CTkFrame(self,corner_radius=10,border_width=1)
 
         # Bouton nouvelle conv
-        self.button_new = ctk.CTkButton(self.card,text="Ecrire",height=45,corner_radius=10,command=self.afficher_new_conv)
-        self.button_new.grid(row=5, column=0, padx=40, pady=(20, 20), sticky="ew")
+        self.button_new = ctk.CTkButton(self,text="Ecrire",height=45,corner_radius=10,command=self.afficher_new_conv)
+        self.button_new.grid(row=3, column=1, padx=20, pady=20, sticky="ew")
 
+    
     def charger_conv(self, fichier_csv):
         """
             Charge les conversations des utilisateurs depuis un fichier CSV.
@@ -81,37 +85,42 @@ class Chat(ctk.CTkFrame):
                 - fichier_csv (str) : chemin du fichier CSV.
 
             Retourne:
-                - users (dict) : dictionnaire contenant les données utilisateurs.
+                - chat(list) : liste de tous les messages enregistés
+                - conv (dict) : dictionnaire contenant les conversation de l'utilisateur connecté.
         """
 
         conv = {}
+        chat = []
 
         with open(fichier_csv, mode='r', encoding='utf-8') as f:
 
             lecteur = csv.DictReader(f)
 
-
             for ligne in lecteur:
-                print(ligne)
+                
+                chat.append(ligne)
 
                 if ligne["sender"] == self.current_user:
                     message = conv.get(ligne["receiver"],"")
-                    message += ":envoyé"
-                    conv[ligne["receiver"]] = {"messages" : message}
+                    text = ligne["messages"]
+                    print(text)
+                    message = f"{message}|{text}:envoyé"
+                    conv[ligne["receiver"]] = message
                     
                 elif ligne["receiver"] == self.current_user:
                     message = conv.get(ligne["sender"],"")
-                    message += ":recu"
-                    conv[ligne["sender"]] = {"messages" : message}
+                    text = ligne["messages"]
+                    message = f"{message}|{text}:reçu"
+                    conv[ligne["sender"]] = message
             
 
-        return conv
+        return chat, conv
     
     def afficher_chat(self):
         """
             Affiche tous les conversations de l'utilisateur.
         """
-        for user2 in self.chat.keys():
+        for user2 in self.chat_user.keys():
             self.create_card(user2)
 
     def create_card(self, user2):
@@ -136,11 +145,11 @@ class Chat(ctk.CTkFrame):
         label_nom = ctk.CTkLabel(card,text=user2,font=("Arial", 14, "bold"))
         label_nom.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
-        button_ouvrir = ctk.CTkButton(card,text="Ouvrir",font=("Arial", 16, "bold"), width=3, corner_radius=15, fg_color = "grey", command=lambda a=user2: self.afficher_conv(a))
+        button_ouvrir = ctk.CTkButton(card,text="Ouvrir",font=("Arial", 12, "bold"), width=3, corner_radius=15, fg_color = "grey", command=lambda a=user2: self.afficher_conv(a))
         button_ouvrir.grid(row=0, column=1, padx=(0, 5), pady=5)
     
-        button_supprimer = ctk.CTkButton(card,text="Supprimer",font=("Arial", 16, "bold"), width=3, corner_radius=15, fg_color = "grey", command=lambda a=user2: self.suppr_conv(a))
-        button_supprimer.grid(row=0, column=2, padx=(0, 5), pady=5)
+        button_supprimer = ctk.CTkButton(card,text="", image = self.img_bin, width=3, corner_radius=15, fg_color = "transparent", command=lambda a=user2: self.suppr_conv(a))
+        button_supprimer.grid(row=0, column=2, padx=(0, 3), pady=5)
 
     def afficher_conv(self, user2):
         """
@@ -151,12 +160,49 @@ class Chat(ctk.CTkFrame):
         new_window = ctk.CTkToplevel(self)
         new_window.title(user2)
         new_window.geometry("320x350")
-        Ajout(new_window, self.master.current_user)
+        Conversation(new_window, self.current_user, user2, self.chat_user[user2])
 
     def suppr_conv(self, user2):
         """
             Supprime la conversation avec l'utilisateur user2 dans le fichier chat.csv
             """
+        
+        fichier = "chat.csv"
+        messages = []
+
+        for ligne in self.chat:
+
+                if (ligne["sender"] == self.current_user and ligne["receiver"] == user2) or (ligne["receiver"] == self.current_user and ligne["sender"] == user2):
+                    continue #on continue, la ligne n'est pas sauvegardée
+
+                else :
+                    sender = ligne["sender"]
+                    receiver = ligne["receiver"]
+                    text = ligne["messages"]
+
+                    new_ligne = f"{sender}:{receiver}:{text}"
+
+                messages.append(new_ligne)
+
+        with open(fichier, mode="w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=["sender","receiver","messages"])
+            writer.writeheader()
+            writer.writerows(messages)
+
+        self.refresh()
+
+    def refresh(self):
+        """
+            Recharge les données de la messagerie puis met à jour
+            l'affichage des cartes dans l'interface graphique.
+        """
+        for widget in self.scroll.winfo_children():
+            widget.destroy()
+
+        #récupération des conversations
+        self.chat, self.chat_user = self.charger_conv("chat.csv")
+
+        self.afficher_chat()
 
     def afficher_new_conv(self):
         """
@@ -177,70 +223,6 @@ class Chat(ctk.CTkFrame):
         else:
             print("Erreur : Cet utilisateur n'est pas connu")
 
-    def ajout_inventaire(self, nom, qte, date):
-        """
-            Ajoute un aliment dans l'inventaire de l'utilisateur courant
-            dans le fichier users.csv.
-
-            Si l'aliment existe déjà avec la même date de péremption,
-            la quantité est incrémentée.
-
-            Paramètres:
-                - nom (str) : nom de l'aliment.
-                - qte (int ou str) : quantité de l'aliment.
-                - date (str) : date de péremption au format JJ/MM/AAAA.
-        """
-        fichier = 'users.csv'
-        users = []
-
-        qte = int(qte)
-
-        with open(fichier, mode='r', newline='', encoding='utf-8') as f:
-            lecteur = csv.DictReader(f)
-            colonnes = lecteur.fieldnames  
-
-            for ligne in lecteur:
-                
-                ligne.setdefault("inventaire", "")
-
-                if ligne["id_user"] == self.current_user:
-                    
-                    inventaire = ligne.get("inventaire", "")
-                    aliments = inventaire.split("|") if inventaire else []
-                    found = False
-
-                    for i in range(len(aliments)):
-
-                        if not aliments[i]:
-                            continue
-                        
-                        try : 
-                            n, q, d = aliments[i].split(":")
-                            q = int(q)
-
-                            if n == nom and d == date:
-                                aliments[i] = f"{n}:{q + qte}:{d}"
-                                found = True
-                                break
-
-                        except ValueError:
-                            continue
-
-                    if not found:
-                        aliments.append(f"{nom}:{qte}:{date}")
-
-                    ligne["inventaire"] = "|".join(aliments)
-
-                users.append(ligne)
-
-        with open(fichier, mode='w', newline='', encoding='utf-8') as f:
-
-            writer = csv.DictWriter(f, fieldnames=colonnes)
-            writer.writeheader()
-            for user in users:
-                writer.writerow(user)
-
-        print(f"{nom} ajouté à l'inventaire de {self.current_user}")
 
     def chercher_user(nom_recherche):
         """
@@ -262,7 +244,7 @@ class Chat(ctk.CTkFrame):
     # Pour le menu déroulant
     def update_suggestions(self, event):
         """
-            Met à jour la liste des suggestions d'aliments
+            Met à jour la liste des suggestions d'utilisateurs
             pendant la saisie dans le champ texte.
 
             Les suggestions proviennent de la méthode
@@ -302,11 +284,11 @@ class Chat(ctk.CTkFrame):
 
     def select_suggestion(self, user):
         """
-            Insère l'aliment sélectionné dans le champ de saisie
+            Insère le nom de l'utilisateur sélectionné dans le champ de saisie
             puis masque la liste des suggestions.
 
             Paramètre:
-                - aliment (str) : aliment choisi par l'utilisateur.
+                - user (str) : l'utilisateur choisi par l'utilisateur courant.
         """
 
         self.entry_user.delete(0, "end")
