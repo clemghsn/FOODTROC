@@ -1,6 +1,7 @@
 import customtkinter as ctk
 import csv
 from inventaire import Inventaire
+from PIL import Image
 
 class Posts(ctk.CTkFrame):
     """
@@ -31,6 +32,9 @@ class Posts(ctk.CTkFrame):
         self.users = self.charger_donnees("users.csv")
         posts_str = self.users[self.master.current_user]["aliments_postes"]
         self.posts = self.parser_posts(posts_str)
+
+        #image
+        self.img_bin = ctk.CTkImage(light_image=Image.open("images/poubelle.png"), size=(30, 30))
 
         # centrer le contenu
         self.grid_columnconfigure(0, weight=1)
@@ -110,7 +114,7 @@ class Posts(ctk.CTkFrame):
 
 
         # bouton supprimer
-        button_supp = ctk.CTkButton(card,text="Supprimer",width=40, command=lambda a=aliment: self.supprimer(a),fg_color="#E74C3C", hover_color="#C0392B")
+        button_supp = ctk.CTkButton(card,text="", image=self.img_bin, fg_color ="transparent",width=40, command=lambda a=aliment: self.supprimer(a), hover_color="#C0392B")
         button_supp.grid(row=0, column=7, padx=(0, 10), pady=5)
 
     def charger_donnees(self, fichier_csv):
