@@ -122,6 +122,10 @@ class Conversation(ctk.CTkFrame):
         for message in self.messages:
             self.create_card(message)
 
+        if len(self.messages)==0 :
+            self.label = ctk.CTkLabel(self.scroll,text="Aucun message pour le moment",font=("Arial", 12, "bold"))
+            self.label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
+
     def create_card(self, message):
         """
             Crée une carte représentant un message.
@@ -202,6 +206,7 @@ class Conversation(ctk.CTkFrame):
         for widget in self.scroll.winfo_children():
             widget.destroy()
 
+        fichier_csv = "chat.csv"
         conv = {}
         chat = []
 
@@ -213,14 +218,14 @@ class Conversation(ctk.CTkFrame):
                 
                 chat.append(ligne)
 
-                if ligne["sender"] == self.master.current_user:
+                if ligne["sender"] == self.current_user:
                     message = conv.get(ligne["receiver"],"")
                     text = ligne["messages"]
                     print(text)
                     message = f"{message}|{text}:envoyé"
                     conv[ligne["receiver"]] = message
                     
-                elif ligne["receiver"] == self.master.current_user:
+                elif ligne["receiver"] == self.current_user:
                     message = conv.get(ligne["sender"],"")
                     text = ligne["messages"]
                     message = f"{message}|{text}:reçu"
