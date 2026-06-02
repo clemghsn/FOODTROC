@@ -1,120 +1,78 @@
 import customtkinter as ctk
+from aliment import Aliment
+from inventaire import Inventaire
 import csv
+from datetime import datetime
 
-class Inventaire(ctk.CTkFrame):
+class Chat(ctk.CTkFrame):
     """
-        Interface graphique permettant d'afficher et gérer
-        l'inventaire de l'utilisateur connecté.
+        Fenêtre permettant à un utilisateur d'envoyer des messages
+        à d'autres utilisateurs.
 
-        Cette classe permet :
-            - d'afficher les aliments de l'inventaire
-            - de supprimer un aliment
-            - de poster un aliment
-            - d'incrémenter la quantité de l'aliment
-            - de mettre à jour l'affichage dynamiquement
+        Cette interface contient :
+            - un champ de saisie du nom de l'aliment,
+            - un champ de quantité,
+            - un champ de date de péremption,
+            - ,
+            - un bouton d'ajout dans le fichier users.csv.
     """
-    
-    def __init__(self, master, switch_page):
+
+    def __init__(self, master, current_user):
         """
-            Initialise la page inventaire.
-
-            Charge les données utilisateur, récupère l'inventaire 
-            du current_user puis affiche les cartes des aliments.
+            Initialise la fenêtre de messagerie.
 
             Paramètres:
-                - master : fenêtre ou widget parent.
-                - switch_page : fonction permettant de changer de page.
+                - master : fenêtre
+                - current_user (str) : identifiant de l'utilisateur connecté.
         """
         super().__init__(master)
-        self.switch_page = switch_page
-        self.users = self.charger_donnees("users.csv")
-        inventaire_str = self.users[self.master.current_user]["inventaire"]
-        self.inventaire = self.parser_inventaire(inventaire_str)
+        self.current_user = current_user
+        self.pack(fill="both", expand=True)
+
+        #récupération des conversations
+        self.chat = self.charger_conv("chat.csv")
+        
 
         # centrer le contenu
         self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(0, weight=1)
 
-        self.header = ctk.CTkFrame(self, fg_color="transparent")
-        self.header.grid(row=0, column=0,sticky="ew", padx=25, pady=(20, 10))
+        # carte centrale 
+        self.card = ctk.CTkFrame(self, corner_radius=15, width=320, height=350)
+        self.card.grid(row=0, column=0)
+        self.card.grid_propagate(False)
 
-        self.header.grid_columnconfigure((0,1,2), weight=1)
 
-        self.title = ctk.CTkLabel(self.header,text="Inventaire",font=ctk.CTkFont(size=22, weight="bold"))
-        self.title.grid(row=0, column=1)
+        self.card.grid_columnconfigure(0, weight=1)
 
+
+        self.title = ctk.CTkLabel(self.card,text="Messagerie",font=ctk.CTkFont(size=20, weight="bold"))
+        self.title.grid(row=0, column=0, pady=(20, 5))
+
+        # Conversations
         self.scroll = ctk.CTkScrollableFrame(self)
         self.scroll.grid(row=1, column=0, sticky="nsew",padx=25, pady=10)
-        self.afficher_inventaire()
+        self.afficher_chat()
 
-        # bouton retour (optionnel)
-        self.button_back = ctk.CTkButton(self.header,text="←",width=40,command=lambda: self.switch_page("menu"))
-        self.button_back.grid(row=0, column=2, sticky="e")
+        self.label_new = ctk.CTkLabel(self.card,text="Nouvelle conversation",font=("Arial", 14, "bold"))
+        self.label_new.grid(row=2, column=0, padx=10, pady=10, sticky="w")
 
+        # Entrée
+        self.entry_aliment = ctk.CTkEntry(self.card,placeholder_text="Recherche utilisateur",height=40)
+        self.entry_aliment.grid(row=1, column=0, padx=40, pady=10, sticky="ew")
 
-    def afficher_inventaire(self):
+        # détecter quand on tape
+        self.entry_aliment.bind("<KeyRelease>", self.update_suggestions)
+
+        self.suggestion_frame = ctk.CTkFrame(self.card,corner_radius=10,border_width=1)
+
+        # Bouton nouvelle conv
+        self.button_new = ctk.CTkButton(self.card,text="Ecrire",height=45,corner_radius=10,command=self.afficher_new_conv)
+        self.button_new.grid(row=5, column=0, padx=40, pady=(20, 20), sticky="ew")
+
+    def charger_conv(self, fichier_csv):
         """
-            Affiche tous les aliments présents
-            dans l'inventaire de l'utilisateur.
-        """
-        for aliment in self.inventaire:
-            self.create_card(aliment)
-
-
-    def create_card(self, aliment):
-        """
-            Crée une carte représentant un aliment.
-
-            La carte affiche :
-                - le nom
-                - la quantité
-                - la date de péremption
-                - un bouton pour poster l'aliment
-                - un bouton pour supprimer l'aliment
-
-            Paramètres:
-                aliment (dict) : dictionnaire contenant
-                les informations de l'aliment.
-        """
-
-        card = ctk.CTkFrame(self.scroll, corner_radius=10)
-        card.pack(fill="x", padx=10, pady=5)
-
-        # colonne extensible
-        card.grid_columnconfigure(3, weight=1)
-
-        label_nom = ctk.CTkLabel(card,text=aliment["nom"],font=("Arial", 14, "bold"))
-        label_nom.grid(row=0, column=0, padx=10, pady=10, sticky="w")
-
-        label_qte = ctk.CTkLabel(card,text=f"Qté: {aliment['quantite']}")
-        label_qte.grid(row=0, column=1, padx=10)
-
-        label_date = ctk.CTkLabel(card,text=f"Expire: {aliment['date']}")
-        label_date.grid(row=0, column=2, padx=10)
-
-
-        # bouton moins
-        button_less = ctk.CTkButton(card,text="-",font=("Arial", 16, "bold"), width=3, corner_radius=15, fg_color = "grey", command=lambda a=aliment: self.moins(a))
-        button_less.grid(row=0, column=4, padx=(0, 5), pady=5)
-
-        # bouton plus
-        button_more = ctk.CTkButton(card,text="+",font=("Arial", 16, "bold"), width=3, corner_radius=15, fg_color = "grey", command=lambda a=aliment: self.plus(a))
-        button_more.grid(row=0, column=5, padx=(0, 5), pady=5)
-
-
-
-        # bouton poster
-        button_post = ctk.CTkButton(card,text="Poster",width=40, command=lambda a=aliment: self.poster(a))
-        button_post.grid(row=0, column=6, padx=(0, 5), pady=5)
-
-
-        # bouton supprimer
-        button_supp = ctk.CTkButton(card,text="Supprimer",width=40, command=lambda a=aliment: self.supprimer(a),fg_color="#E74C3C", hover_color="#C0392B")
-        button_supp.grid(row=0, column=7, padx=(0, 10), pady=5)
-
-    def charger_donnees(self, fichier_csv):
-        """
-            Charge les données des utilisateurs depuis un fichier CSV.
+            Charge les conversations des utilisateurs depuis un fichier CSV.
 
             Les informations récupérées sont :
                 - l'inventaire
@@ -127,7 +85,7 @@ class Inventaire(ctk.CTkFrame):
                 - users (dict) : dictionnaire contenant les données utilisateurs.
         """
 
-        users = {}
+        conv = {}
 
         with open(fichier_csv, mode='r', encoding='utf-8') as f:
 
@@ -135,275 +93,210 @@ class Inventaire(ctk.CTkFrame):
 
 
             for ligne in lecteur:
+                print(ligne)
 
-                users[ligne["id_user"]] = {
+                if ligne["sender"] == self.current_user:
+                    message = conv.get(ligne["receiver"],"")
+                    message += ":envoyé"
+                    conv[ligne["receiver"]] = {"messages" : message}
+                    
+                elif ligne["receiver"] == self.current_user:
+                    message = conv.get(ligne["sender"],"")
+                    message += ":recu"
+                    conv[ligne["sender"]] = {"messages" : message}
+            
 
-                    "inventaire": ligne["inventaire"],
-
-                    "aliments_postes": ligne["aliments_postes"]
-
-                }
-
-        return users
-
-    def parser_inventaire(self, inventaire_str):
+        return conv
+    
+    def afficher_chat(self):
         """
-            Transforme la chaîne de caractères de l'inventaire
-            en liste de dictionnaires exploitables.
-
-            Paramètre:
-                - inventaire_str (str) : chaîne représentant l'inventaire.
-
-            Retourne:
-                - aliments (list) : liste des aliments formatés.
+            Affiche tous les conversations de l'utilisateur.
         """
+        for user2 in self.chat.keys():
+            self.create_card(user2)
 
-        aliments = []
-
-        if inventaire_str == "":
-            return aliments
-
-        liste = inventaire_str.split("|")
-
-        for item in liste:
-
-            nom, quantite, date = item.split(":")
-
-            aliments.append({
-                "nom": nom,
-                "quantite": quantite,
-                "date": date
-            })
-
-        return aliments
-
-    def supprimer(self, aliment):
+    def create_card(self, user2):
         """
-            Supprime un aliment de l'inventaire
-            de l'utilisateur connecté.
+            Crée une carte représentant une conversation.
 
-            Le fichier users.csv est ensuite mis à jour
-            puis l'interface est rafraîchie.
-
-            Paramètre:
-                - aliment (dict) : aliment à supprimer
+            La carte affiche :
+                - le nom de l'interlocuteur (user2)
+                - un bouton pour supprimer la conversation
+               
+            Paramètres:
+                conv (dict) : dictionnaire contenant
+                les informations de la conversation.
         """
 
-        fichier = "users.csv"
+        card = ctk.CTkFrame(self.scroll, corner_radius=10)
+        card.pack(fill="x", padx=10, pady=5)
+
+        # colonne extensible
+        card.grid_columnconfigure(3, weight=1)
+
+        label_nom = ctk.CTkLabel(card,text=user2,font=("Arial", 14, "bold"))
+        label_nom.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+
+        button_ouvrir = ctk.CTkButton(card,text="Ouvrir",font=("Arial", 16, "bold"), width=3, corner_radius=15, fg_color = "grey", command=lambda a=user2: self.afficher_conv(a))
+        button_ouvrir.grid(row=0, column=1, padx=(0, 5), pady=5)
+    
+        button_supprimer = ctk.CTkButton(card,text="Supprimer",font=("Arial", 16, "bold"), width=3, corner_radius=15, fg_color = "grey", command=lambda a=user2: self.suppr_conv(a))
+        button_supprimer.grid(row=0, column=2, padx=(0, 5), pady=5)
+
+    def afficher_conv(self, user2):
+        """
+            Ouvre une nouvelle fenêtre permettant d'envoyer des messages aux autres utilisateurs.
+
+            Transmet l'utilisateur courant à la fenêtre Conversation.
+            """
+        new_window = ctk.CTkToplevel(self)
+        new_window.title(user2)
+        new_window.geometry("320x350")
+        Ajout(new_window, self.master.current_user)
+
+    def suppr_conv(self, user2):
+        """
+            Supprime la conversation avec l'utilisateur user2 dans le fichier chat.csv
+            """
+
+    def afficher_new_conv(self):
+        """
+            Ouvre une nouvelle fenêtre permettant d'envoyer des messages à un nouvel utilisateur.
+
+            Transmet l'utilisateur courant à la fenêtre Conversation.
+
+            Vérifications effectuées :
+                - l'utilisateur sélectionné existe dans la base de données.
+
+            Si les données sont valides :
+                - une nouvelle fenêtre de conversation s'ouvre
+        """
+        aliment = self.entry_aliment.get()
+        quantite = self.entry_quantite.get()
+        date = self.entry_date.get()
+
+            
+        if isinstance(self.master, ctk.CTkToplevel): # ferme la fenêtre de saisie après l'ajout
+                self.master.destroy()
+        else:
+            print("Erreur : Cet utilisateur n'est pas connu")
+
+    def ajout_inventaire(self, nom, qte, date):
+        """
+            Ajoute un aliment dans l'inventaire de l'utilisateur courant
+            dans le fichier users.csv.
+
+            Si l'aliment existe déjà avec la même date de péremption,
+            la quantité est incrémentée.
+
+            Paramètres:
+                - nom (str) : nom de l'aliment.
+                - qte (int ou str) : quantité de l'aliment.
+                - date (str) : date de péremption au format JJ/MM/AAAA.
+        """
+        fichier = 'users.csv'
         users = []
 
-        with open(fichier, mode="r", encoding="utf-8") as f:
+        qte = int(qte)
+
+        with open(fichier, mode='r', newline='', encoding='utf-8') as f:
             lecteur = csv.DictReader(f)
-            colonnes = lecteur.fieldnames
+            colonnes = lecteur.fieldnames  
 
             for ligne in lecteur:
+                
+                ligne.setdefault("inventaire", "")
 
-                if ligne["id_user"] == self.master.current_user:
-
+                if ligne["id_user"] == self.current_user:
+                    
                     inventaire = ligne.get("inventaire", "")
                     aliments = inventaire.split("|") if inventaire else []
+                    found = False
 
-                    new_list = []
+                    for i in range(len(aliments)):
 
-                    for item in aliments:
+                        if not aliments[i]:
+                            continue
+                        
+                        try : 
+                            n, q, d = aliments[i].split(":")
+                            q = int(q)
 
-                        if not item:
+                            if n == nom and d == date:
+                                aliments[i] = f"{n}:{q + qte}:{d}"
+                                found = True
+                                break
+
+                        except ValueError:
                             continue
 
-                        nom, qte, date = item.split(":")
+                    if not found:
+                        aliments.append(f"{nom}:{qte}:{date}")
 
-                        if not (nom == aliment["nom"] and date == aliment["date"]):
-                            new_list.append(item)
-
-                    ligne["inventaire"] = "|".join(new_list)
+                    ligne["inventaire"] = "|".join(aliments)
 
                 users.append(ligne)
 
-        with open(fichier, mode="w", newline="", encoding="utf-8") as f:
+        with open(fichier, mode='w', newline='', encoding='utf-8') as f:
+
             writer = csv.DictWriter(f, fieldnames=colonnes)
             writer.writeheader()
-            writer.writerows(users)
+            for user in users:
+                writer.writerow(user)
 
-        self.refresh()
-        
-    def poster(self, aliment):
+        print(f"{nom} ajouté à l'inventaire de {self.current_user}")
+
+    # Pour le menu déroulant
+    def update_suggestions(self, event):
         """
-            Déplace un aliment de l'inventaire vers la liste 
-            des aliments postés de l'utilisateur connecté.
+            Met à jour la liste des suggestions d'aliments
+            pendant la saisie dans le champ texte.
 
-            Le fichier users.csv est mis à jour puis l'affichage 
-            est rafraîchi.
+            Les suggestions proviennent de la méthode
+            Aliment.chercher_aliment().
 
             Paramètre:
-                - aliment (dict) : aliment à poster.
+                - event : événement clavier déclenché lors de la saisie.
         """
+        texte = self.entry_aliment.get().lower()
 
-        fichier = "users.csv"
-        users = []
-
-        with open(fichier, mode="r", encoding="utf-8") as f:
-            lecteur = csv.DictReader(f)
-            colonnes = lecteur.fieldnames
-
-            for ligne in lecteur:
-
-                if ligne["id_user"] == self.master.current_user:
-
-                    # enlever inventaire
-                    inventaire = ligne.get("inventaire", "")
-                    aliments = inventaire.split("|") if inventaire else []
-
-                    new_inv = []
-                    for item in aliments:
-
-                        if not item:
-                            continue
-
-                        nom, qte, date = item.split(":")
-
-                        if not (nom == aliment["nom"] and date == aliment["date"]):
-                            new_inv.append(item)
-
-                    ligne["inventaire"] = "|".join(new_inv)
-
-                    # ajouter dans aliments_postes
-                    postes = ligne.get("aliments_postes", "")
-
-                    new_post = f"{aliment['nom']}:{aliment['quantite']}:{aliment['date']}"
-
-                    if postes.strip() == "":
-                        ligne["aliments_postes"] = new_post
-                    else:
-                        ligne["aliments_postes"] += "|" + new_post
-
-                users.append(ligne)
-
-        with open(fichier, mode="w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=colonnes)
-            writer.writeheader()
-            writer.writerows(users)
-
-        self.refresh()
-
-    def plus(self, aliment):
-        """
-            Incrémente de 1 la quantité d'un aliment de l'inventaire
-            de l'utilisateur connecté.
-
-            Le fichier users.csv est ensuite mis à jour
-            puis l'interface est rafraîchie.
-
-            Paramètre:
-                - aliment (dict) : aliment à modifier
-        """
-
-        fichier = "users.csv"
-        users = []
-
-        with open(fichier, mode="r", encoding="utf-8") as f:
-            lecteur = csv.DictReader(f)
-            colonnes = lecteur.fieldnames
-
-            for ligne in lecteur:
-
-                if ligne["id_user"] == self.master.current_user:
-
-                    inventaire = ligne.get("inventaire", "")
-                    aliments = inventaire.split("|") if inventaire else []
-
-                    new_list = []
-
-                    for item in aliments:
-
-                        if not item:
-                            continue
-
-                        nom, qte, date = item.split(":")
-
-                        if not (nom == aliment["nom"] and date == aliment["date"]):
-                            new_list.append(item)
-                        else :
-                            int_qte = int(qte) + 1
-                            qte = str(int_qte)
-                            item = nom +":"+ qte + ":" + date
-                            new_list.append(item)
-
-                    ligne["inventaire"] = "|".join(new_list)
-
-                users.append(ligne)
-
-        with open(fichier, mode="w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=colonnes)
-            writer.writeheader()
-            writer.writerows(users)
-
-        self.refresh()
-
-    def moins(self, aliment) :
-        """
-            Décrémente de 1 la quantité d'un aliment de l'inventaire
-            de l'utilisateur connecté.
-
-            Le fichier users.csv est ensuite mis à jour
-            puis l'interface est rafraîchie.
-
-            Paramètre:
-                - aliment (dict) : aliment à modifier
-        """
-
-        fichier = "users.csv"
-        users = []
-
-        with open(fichier, mode="r", encoding="utf-8") as f:
-            lecteur = csv.DictReader(f)
-            colonnes = lecteur.fieldnames
-
-            for ligne in lecteur:
-
-                if ligne["id_user"] == self.master.current_user:
-
-                    inventaire = ligne.get("inventaire", "")
-                    aliments = inventaire.split("|") if inventaire else []
-
-                    new_list = []
-
-                    for item in aliments:
-
-                        if not item:
-                            continue
-
-                        nom, qte, date = item.split(":")
-
-                        if not (nom == aliment["nom"] and date == aliment["date"]):
-                            new_list.append(item)
-                        else :
-                            if qte != "1": 
-                                int_qte = int(qte) - 1
-                                qte = str(int_qte)
-                                item = nom +":"+ qte + ":" + date
-                                new_list.append(item)
-
-                    ligne["inventaire"] = "|".join(new_list)
-
-                users.append(ligne)
-
-        with open(fichier, mode="w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=colonnes)
-            writer.writeheader()
-            writer.writerows(users)
-
-        self.refresh()
-
-    def refresh(self):
-        """
-            Recharge les données de l'inventaire puis met à jour
-            l'affichage des cartes dans l'interface graphique.
-        """
-        for widget in self.scroll.winfo_children():
+        for widget in self.suggestion_frame.winfo_children():
             widget.destroy()
 
-        self.users = self.charger_donnees("users.csv")
-        inventaire_str = self.users[self.master.current_user]["inventaire"]
-        self.inventaire = self.parser_inventaire(inventaire_str)
+        if texte == "":
+            self.suggestion_frame.grid_remove()
+            return
 
-        self.afficher_inventaire()
+        suggestions = Aliment.chercher_aliment(texte)
+
+        if suggestions:
+
+            self.suggestion_frame.grid(
+                row=2,
+                column=0,
+                padx=40,
+                sticky="ew"
+            )
+
+            for aliment in suggestions[:5]:
+                button = ctk.CTkButton(self.suggestion_frame,text=aliment,anchor="w",fg_color="transparent",hover_color=("gray80", "gray25"),command=lambda a=aliment: self.select_suggestion(a))
+                button.pack(fill="x", padx=5, pady=2)
+
+
+        else:
+            self.suggestion_frame.grid_remove()
+
+
+    def select_suggestion(self, aliment):
+        """
+            Insère l'aliment sélectionné dans le champ de saisie
+            puis masque la liste des suggestions.
+
+            Paramètre:
+                - aliment (str) : aliment choisi par l'utilisateur.
+        """
+
+        self.entry_aliment.delete(0, "end")
+        self.entry_aliment.insert(0, aliment)
+
+        self.suggestion_frame.grid_remove()
