@@ -5,7 +5,7 @@ from inventaire import Inventaire
 from chat import Chat
 import webbrowser
 import csv
-from Carte import Carte
+from carte import Carte
 from datetime import datetime, timedelta
 from CTkMessagebox import CTkMessagebox
 import pygame

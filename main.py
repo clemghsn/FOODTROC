@@ -47,6 +47,8 @@ class App(ctk.CTk):
             Paramètre:
                 - page (str) : nom de la page à afficher
         """
+        self.geometry("800x650")
+
         if self.current_frame:
             self.current_frame.destroy()
 
