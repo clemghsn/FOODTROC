@@ -131,6 +131,10 @@ class Chat(ctk.CTkFrame):
         for user2 in self.chat_user.keys():
             self.create_card(user2)
 
+        if len(self.chat_user.keys()) == 0:
+            self.label = ctk.CTkLabel(self.scroll,text="Aucune conversation",font=("Arial", 16, "bold"))
+            self.label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
+
     def create_card(self, user2):
         """
             Crée une carte représentant une conversation.

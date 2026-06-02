@@ -27,10 +27,11 @@ class Conversation(ctk.CTkFrame):
         super().__init__(master)
         self.current_user = current_user
         self.user2 = user2
+        self.conv = conv
         self.pack(fill="both", expand=True)
 
         #récupération des conversations
-        self.messages = self.charger_conv(conv)
+        self.messages = self.charger_conv(self.conv)
 
         #images
         self.img_send = ctk.CTkImage(light_image=Image.open("images/send.png"), size=(20, 20))
@@ -49,18 +50,13 @@ class Conversation(ctk.CTkFrame):
         self.card.grid_propagate(False)
 
         self.card.grid_columnconfigure(0, weight=1)
-        self.card.grid_columnconfigure(1, weight=1)
-        self.card.grid_columnconfigure(2, weight=2)
         self.card.grid_rowconfigure(0, weight=1)
 
 
         self.title = ctk.CTkLabel(self.card,text=user2,font=ctk.CTkFont(size=14, weight="bold"))
-        self.title.grid(row=0, column=0, columnspan =2, pady=10,sticky="wn")
+        self.title.grid(row=0, column=0, pady=10)
 
 
-        # Bouton retour
-        self.button_back = ctk.CTkButton(self.card,text="←",height=15,corner_radius=10)
-        self.button_back.grid(row=0, column=2, padx=10, pady=10, sticky="n")
 
         # Conversations
         self.scroll = ctk.CTkScrollableFrame(self)
@@ -176,14 +172,7 @@ class Conversation(ctk.CTkFrame):
             colonnes = lecteur.fieldnames  
 
             for ligne in lecteur:
-
-                sender = ligne["sender"]
-                receiver = ligne["receiver"]
-                text = ligne["messages"]
-
-                new_ligne = f"{sender}:{receiver}:{text}"
-
-                messages.append(new_ligne)
+                messages.append(ligne)
 
         #nouveau message
         message = self.entry_text.get()
@@ -191,14 +180,55 @@ class Conversation(ctk.CTkFrame):
         time = str(datetime.today().time()).split(":")
         heure = f"{time[0]}h{time[1]}"
         text = f"{message}:{date}:{heure}"
-        new_mess = f"{self.current_user}:{self.user2}:{text}"
+        new_mess = {"sender":self.current_user,"receiver":self.user2,"messages":text}
         messages.append(new_mess)
 
         with open(fichier, mode='w', newline='', encoding='utf-8') as f:
 
             writer = csv.DictWriter(f, fieldnames=colonnes)
             writer.writeheader()
-            for user in users:
-                writer.writerow(user)
+            for mess in messages:
+                writer.writerow(mess)
 
-        print(f"{nom} ajouté à l'inventaire de {self.current_user}")
+        print(f"{self.current_user} a envoyé un message à {self.user2}")
+
+        self.refresh()
+
+    def refresh(self):
+        """
+            Recharge les données de la conversation puis met à jour
+            l'affichage des cartes dans l'interface graphique.
+        """
+        for widget in self.scroll.winfo_children():
+            widget.destroy()
+
+        conv = {}
+        chat = []
+
+        with open(fichier_csv, mode='r', encoding='utf-8') as f:
+
+            lecteur = csv.DictReader(f)
+
+            for ligne in lecteur:
+                
+                chat.append(ligne)
+
+                if ligne["sender"] == self.master.current_user:
+                    message = conv.get(ligne["receiver"],"")
+                    text = ligne["messages"]
+                    print(text)
+                    message = f"{message}|{text}:envoyé"
+                    conv[ligne["receiver"]] = message
+                    
+                elif ligne["receiver"] == self.master.current_user:
+                    message = conv.get(ligne["sender"],"")
+                    text = ligne["messages"]
+                    message = f"{message}|{text}:reçu"
+                    conv[ligne["sender"]] = message
+            
+    
+        self.chat, self.chat_user = chat, conv
+        conv = self.chat_user[self.user2]
+        self.messages = self.charger_conv(conv)
+
+        self.afficher_chat()

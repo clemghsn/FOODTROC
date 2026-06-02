@@ -19,7 +19,9 @@ class Menu(ctk.CTkFrame):
         Elle permet :
             - d'accéder à l'inventaire,
             - d'ajouter un aliment,
+            - d'accéder aux aliments postés,
             - d'afficher la carte des utilisateurs,
+            - d'accéder à la messagerie,
             - de se déconnecter,
             - d'afficher des rappels d'aliments proches de la péremption.
     """
