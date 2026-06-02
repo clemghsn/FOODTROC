@@ -120,7 +120,7 @@ class Menu(ctk.CTkFrame):
             """
         new_window = ctk.CTkToplevel(self)
         new_window.title("Messagerie")
-        new_window.geometry("320x350")
+        new_window.geometry("375x500")
         Chat(new_window, self.master.current_user)
 
     def affiche_posts(self):

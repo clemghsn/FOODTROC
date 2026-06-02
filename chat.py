@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from aliment import Aliment
-from inventaire import Inventaire
+from Inventaire import Inventaire
 import csv
 from datetime import datetime
 
@@ -28,9 +28,9 @@ class Chat(ctk.CTkFrame):
         super().__init__(master)
         self.current_user = current_user
         self.pack(fill="both", expand=True)
-
         #récupération des conversations
         self.chat = self.charger_conv("chat.csv")
+        self.users = self.charger_conv("users.csv")
         
 
         # centrer le contenu
@@ -45,7 +45,6 @@ class Chat(ctk.CTkFrame):
 
         self.card.grid_columnconfigure(0, weight=1)
 
-
         self.title = ctk.CTkLabel(self.card,text="Messagerie",font=ctk.CTkFont(size=20, weight="bold"))
         self.title.grid(row=0, column=0, pady=(20, 5))
 
@@ -58,11 +57,11 @@ class Chat(ctk.CTkFrame):
         self.label_new.grid(row=2, column=0, padx=10, pady=10, sticky="w")
 
         # Entrée
-        self.entry_aliment = ctk.CTkEntry(self.card,placeholder_text="Recherche utilisateur",height=40)
-        self.entry_aliment.grid(row=1, column=0, padx=40, pady=10, sticky="ew")
+        self.entry_user = ctk.CTkEntry(self.card,placeholder_text="Recherche utilisateur",height=40)
+        self.entry_user.grid(row=1, column=0, padx=40, pady=10, sticky="ew")
 
         # détecter quand on tape
-        self.entry_aliment.bind("<KeyRelease>", self.update_suggestions)
+        self.entry_user.bind("<KeyRelease>", self.update_suggestions)
 
         self.suggestion_frame = ctk.CTkFrame(self.card,corner_radius=10,border_width=1)
 
@@ -171,10 +170,7 @@ class Chat(ctk.CTkFrame):
             Si les données sont valides :
                 - une nouvelle fenêtre de conversation s'ouvre
         """
-        aliment = self.entry_aliment.get()
-        quantite = self.entry_quantite.get()
-        date = self.entry_date.get()
-
+        user = self.entry_user.get()
             
         if isinstance(self.master, ctk.CTkToplevel): # ferme la fenêtre de saisie après l'ajout
                 self.master.destroy()
@@ -246,6 +242,23 @@ class Chat(ctk.CTkFrame):
 
         print(f"{nom} ajouté à l'inventaire de {self.current_user}")
 
+    def chercher_user(nom_recherche):
+        """
+            Recherche les aliments contenant le texte saisi
+            par l'utilisateur -> utilisée dans Ajout
+
+            Paramètre:
+                - nom_recherche (str) : texte recherché.
+
+            Retourne:
+                - list : liste des aliments correspondants.
+        """
+        nom_recherche = nom_recherche.lower()
+
+        resultats = [ nom for nom in self.users.keys() if nom_recherche in nom]
+
+        return resultats
+
     # Pour le menu déroulant
     def update_suggestions(self, event):
         """
@@ -258,7 +271,7 @@ class Chat(ctk.CTkFrame):
             Paramètre:
                 - event : événement clavier déclenché lors de la saisie.
         """
-        texte = self.entry_aliment.get().lower()
+        texte = self.entry_user.get().lower()
 
         for widget in self.suggestion_frame.winfo_children():
             widget.destroy()
@@ -267,7 +280,7 @@ class Chat(ctk.CTkFrame):
             self.suggestion_frame.grid_remove()
             return
 
-        suggestions = Aliment.chercher_aliment(texte)
+        suggestions = chercher_user(texte)
 
         if suggestions:
 
@@ -278,8 +291,8 @@ class Chat(ctk.CTkFrame):
                 sticky="ew"
             )
 
-            for aliment in suggestions[:5]:
-                button = ctk.CTkButton(self.suggestion_frame,text=aliment,anchor="w",fg_color="transparent",hover_color=("gray80", "gray25"),command=lambda a=aliment: self.select_suggestion(a))
+            for user in suggestions[:5]:
+                button = ctk.CTkButton(self.suggestion_frame,text=user,anchor="w",fg_color="transparent",hover_color=("gray80", "gray25"),command=lambda a=user: self.select_suggestion(a))
                 button.pack(fill="x", padx=5, pady=2)
 
 
@@ -287,7 +300,7 @@ class Chat(ctk.CTkFrame):
             self.suggestion_frame.grid_remove()
 
 
-    def select_suggestion(self, aliment):
+    def select_suggestion(self, user):
         """
             Insère l'aliment sélectionné dans le champ de saisie
             puis masque la liste des suggestions.
@@ -296,7 +309,7 @@ class Chat(ctk.CTkFrame):
                 - aliment (str) : aliment choisi par l'utilisateur.
         """
 
-        self.entry_aliment.delete(0, "end")
-        self.entry_aliment.insert(0, aliment)
+        self.entry_user.delete(0, "end")
+        self.entry_user.insert(0, user)
 
         self.suggestion_frame.grid_remove()

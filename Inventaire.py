@@ -81,7 +81,7 @@ class Inventaire(ctk.CTkFrame):
         card.pack(fill="x", padx=10, pady=5)
 
         # colonne extensible
-        card.grid_columnconfigure(7, weight=1)
+        card.grid_columnconfigure(3, weight=1)
 
         label_nom = ctk.CTkLabel(card,text=aliment["nom"],font=("Arial", 14, "bold"))
         label_nom.grid(row=0, column=0, padx=10, pady=10, sticky="w")
