@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from tkinter import CENTER
 import csv
+import pygame
 
 
 
@@ -32,6 +33,9 @@ class Login(ctk.CTkFrame):
         self.button = ctk.CTkButton(self.frame, text="Connexion", command = self.login, width=200, height=32, border_width=0, corner_radius=8, font=("Segoe UI", 15))
         self.button.grid(row=3, column=0, columnspan=2, pady=20)
 
+        # voix
+        pygame.mixer.init()
+
     def charger_donnees(self, fichier_csv):
 
         users = {}
@@ -56,5 +60,11 @@ class Login(ctk.CTkFrame):
             print("Connexion réussie")
             self.master.current_user = identifiant
             self.switch_page("menu")
+            self.audio()
+
         else:
             print("Erreur")
+
+    def audio(self):
+        pygame.mixer.music.load("foodtroc_audio.mp3")
+        pygame.mixer.music.play()

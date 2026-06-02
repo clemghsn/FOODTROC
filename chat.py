@@ -262,7 +262,7 @@ class Chat(ctk.CTkFrame):
         conv = self.chat_user.get(user2,"")
         new_window = ctk.CTkToplevel(self)
         new_window.title(user2)
-        new_window.geometry("500x425")
+        new_window.geometry("400x425")
 
         Conversation(new_window, self.master.current_user, user2, conv)
 
@@ -283,7 +283,7 @@ class Chat(ctk.CTkFrame):
         """
         nom_recherche = nom_recherche.lower()
 
-        resultats = [ nom for nom in self.users.keys() if nom_recherche in nom.lower()]
+        resultats = [ nom for nom in self.users.keys() if nom_recherche in nom.lower() and nom != self.master.current_user]
 
         return resultats
 
@@ -306,7 +306,7 @@ class Chat(ctk.CTkFrame):
 
         suggestions = self.chercher_user(texte)
         if texte == "":
-            suggestions = list(self.users.keys())
+            suggestions = [user for user in self.users.keys() if user != self.master.current_user]
 
         if not suggestions:
             self.suggestion_frame.grid_remove()

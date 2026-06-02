@@ -188,6 +188,9 @@ class Conversation(ctk.CTkFrame):
         new_mess = {"sender":self.current_user,"receiver":self.user2,"messages":text}
         messages.append(new_mess)
 
+        if message == "":
+            return
+
         with open(fichier, mode='w', newline='', encoding='utf-8') as f:
 
             writer = csv.DictWriter(f, fieldnames=colonnes)
@@ -196,6 +199,9 @@ class Conversation(ctk.CTkFrame):
                 writer.writerow(mess)
 
         print(f"{self.current_user} a envoyé un message à {self.user2}")
+
+        self.entry_text.delete(0, "end")
+        self.entry_text.focus()
 
         self.refresh()
 

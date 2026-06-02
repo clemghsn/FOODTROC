@@ -87,10 +87,6 @@ class Menu(ctk.CTkFrame):
         self.button_rappel = ctk.CTkButton(self.frame, text="",image = self.img_rappel,command =self.afficher_rappels, width=0, height=0, fg_color ="transparent", border_width=0)
         self.button_rappel.grid(row=3, column=0,padx = 30, pady=(10,20), sticky="")
 
-        #voix
-        pygame.mixer.init()
-        pygame.mixer.music.load("no_waste_just_taste.mp3")
-        pygame.mixer.music.play()
 
     def affiche_carte(self):
         """
