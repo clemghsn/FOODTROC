@@ -61,6 +61,7 @@ class Conversation(ctk.CTkFrame):
         # Conversations
         self.scroll = ctk.CTkScrollableFrame(self)
         self.scroll.grid(row=1, column=0, columnspan = 3, sticky="nsew",padx=30, pady=10)
+        self.scroll.grid_columnconfigure((0,1,2), weight=1)
         self.afficher_chat()
 
         # carte nouveau message
@@ -119,14 +120,16 @@ class Conversation(ctk.CTkFrame):
         """
             Affiche mes messages.
         """
+        i=0
         for message in self.messages:
-            self.create_card(message)
+            self.create_card(message,i)
+            i+=1
 
         if len(self.messages)==0 :
             self.label = ctk.CTkLabel(self.scroll,text="Aucun message pour le moment",font=("Arial", 12, "bold"))
             self.label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
 
-    def create_card(self, message):
+    def create_card(self, message,i):
         """
             Crée une carte représentant un message.
 
@@ -140,13 +143,16 @@ class Conversation(ctk.CTkFrame):
                 les informations du message.
         """
 
-        card = ctk.CTkFrame(self.scroll, corner_radius=10)
+        
         if message["etat"] == "reçu":
-            card.pack(padx=10, pady=5, side = "left")
+            card = ctk.CTkFrame(self.scroll, corner_radius=10, fg_color = '#A0CF9B', width=300, height=20)
+            card.grid(row=[i], column=0,padx=10, pady=5, columnspan = 2, sticky="w",ipadx=0)
         else :
-            card.pack(padx=10, pady=5, side = "right")
+            card = ctk.CTkFrame(self.scroll, corner_radius=10, width=300, height=20)
+            card.grid(row=[i], column=1, padx=10, pady=5 , columnspan = 2, sticky='e',ipadx=0)
 
         # colonne extensible
+        card.grid_propagate(True)
         card.grid_columnconfigure(3, weight=1)
 
         label_date = ctk.CTkLabel(card,text=message["date"],font=("Arial", 10, "bold"))
