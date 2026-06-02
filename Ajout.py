@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from aliment import Aliment
-from Inventaire import Inventaire
+from inventaire import Inventaire
 import csv
 from datetime import datetime
 

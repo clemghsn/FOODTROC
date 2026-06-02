@@ -1,6 +1,6 @@
 import customtkinter as ctk
 import csv
-from Inventaire import Inventaire
+from inventaire import Inventaire
 
 class Posts(ctk.CTkFrame):
     """

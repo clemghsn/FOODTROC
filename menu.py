@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from PIL import Image
 from Ajout import Ajout
-from Inventaire import Inventaire
+from inventaire import Inventaire
 from chat import Chat
 import webbrowser
 import csv
