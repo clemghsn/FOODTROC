@@ -1,6 +1,6 @@
 # ISN Projet 
 
-## FoodTroc - *"No Waste, Just Taste"*
+## 🥕 FoodTroc - *"No Waste, Just Taste"*
 
 
 ## Description
@@ -12,6 +12,24 @@ Carte collaborative : publie ou récupére des aliments chez des utlisateurs de 
 
 Gestion d'inventaire : tes aliments sont suivis, (type, quantité, date de péremption), on t'alerte même quand tes aliments vont bientôt périmer !
 
+## Aperçu de l'application
+
+### Accueil 
+
+<p align="center">
+  <img src="images/accueil_foodtroc.png" alt="Écran d'accueil de FoodTroc" width="30%" />
+</p>
+
+### Inventaire
+
+<p align="center">
+  <img src="images/inventaire_photo.png" alt="Écran d'accueil de FoodTroc" width="30%" />
+</p>
+
+### Messagerie
+<p align="center">
+  <img src="images/messagerie.png" alt="Messagerie FoodTroc" width="30%" />
+</p>
 
 ## Comment l'utiliser ?
 Installe ces bibliothèques :
